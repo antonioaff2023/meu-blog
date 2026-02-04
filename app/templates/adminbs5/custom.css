@@ -1,0 +1,130 @@
+:root {
+  --ad-menu-size: 360px;
+}
+
+#topMenu {
+  position: fixed;
+  /* Fixa o menu no topo */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  /* Garante que o menu fique acima do conteúdo */
+  transition: transform 0.3s ease-in-out;
+  /* Adiciona uma transição suave */
+}
+
+.nav-up {
+  transform: translateY(-100%);
+  /* Move o menu para cima, escondendo-o */
+}
+
+
+.intro-header {
+  padding-top: 100px;
+}
+
+#topMenu .nav-link,
+#topMenu .navbar-brand {
+  padding: 5px;
+  color: #ffffff !important;
+  /* garante que o texto fique branco sobre o fundo */
+  text-shadow: 1px 1px 3px black;
+  margin-right: 20px !important;
+  font-size: clamp(15px, 1.5vw, 17px);
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+#topMenu .nav-link:hover,
+#topMenu .navbar-brand:hover {
+  color: #bac2f3 !important;
+  /* garante que o texto fique branco sobre o fundo */
+  text-shadow: 1px 1px 3px black;
+  text-decoration: underline 3px;
+}
+
+.titulo-site {
+  margin: 0 !important;
+  padding: 0 !important;
+
+  color: #fff;
+  text-align: center;
+}
+
+.titulo-site h1 {
+  font-family: 'Arial Narrow Bold', sans-serif;
+  font-size: clamp(15px, 4vw, 50px);
+  text-shadow: 1px 1px 3px black;
+}
+
+
+.titulo-site h2 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(10px, 2vw, 21px);
+  text-shadow: 1px 1px 3px black;
+}
+
+
+.postagem>a {
+  text-decoration: none !important;
+
+}
+
+.titulo-postado {
+  font-size: clamp(15px, 4vw, 30px);
+  color: black;
+  padding: 0;
+  margin: 0;
+
+
+}
+
+
+
+.titulo-postado:hover {
+  color: rgb(104, 102, 98) !important;
+  text-decoration: underline;
+
+}
+
+.subtitulo-postado {
+  font-size: clamp(15px, 4vw, 20px);
+  font-style: italic;
+  color: black;
+
+
+}
+
+.subtitulo-postado:hover {
+  color: rgb(104, 102, 98) !important;
+  text-decoration: underline;
+
+
+}
+
+.data-postagem {
+  padding: 0;
+  margin: 0;
+
+}
+
+
+#topMenu .nav-link,
+#topMenu .navbar-nav .nav-link,
+#topMenu a {
+  color: #fff !important;
+}
+
+@media (max-width: 576px) {
+  #topMenu .nav-link,
+  #topMenu .navbar-nav .nav-link,
+  #topMenu a {
+    padding-top: 5px !important;
+    font-size: 9px;
+  }
+
+
+
+}
+

@@ -1,0 +1,105 @@
+<html>
+
+<head>
+    <style>
+        .sermao-container {
+
+            font-family: Georgia, "Times New Roman", serif;
+            overflow-y: auto;
+        }
+
+        .sermao-titulo {
+            font-size: 1.6em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .sermao-texto {
+            text-align: justify;
+            font-size: 1.0em;
+
+        }
+
+        blockquote {
+            margin-left: 20px;
+            border-left: 4px solid #757575;
+            color: #050505;
+            font-style: italic;
+        }
+
+        h3 {
+            text-align: left;
+            font-style: italic;
+            font-size: 1.2em;
+        }
+
+        h2 {
+            text-align: left;
+            font-size: 1.5em;
+        }
+
+        body.corpo-sermao {
+            background-color: #f8f9fa;
+            height: 50vh !important;
+            
+        }
+    </style>
+</head>
+
+<body class="corpo-sermao">
+    <div class="sermao-container">
+        <div class="sermao-titulo">
+            <h2>{titulo}<span class="btn btn-danger" style="float:right" id="close-modal"> Fechar </span>
+                <span class="btn btn-primary" style="float:right; margin-right: 10px;" id="print-modal"> Imprimir
+                </span>
+            </h2>
+
+        </div>
+
+        <hr>
+
+        <div class="sermao-texto">
+            {conteudo}
+        </div>
+
+    </div>
+    <span class="btn btn-danger" style="float:left" id="close-modal2"> Fechar </span>
+</body>
+
+<script>
+    $('#close-modal, #close-modal2').click(function () {
+        $('[widget="TWindow"]').remove();
+        window.close();
+
+    });
+
+    $('#print-modal').click(function () {
+        // Recarrega o conteúdo do modal em uma nova janela para impressão
+        var conteudo = $('.sermao-container').html();
+        //Esconda os botões de fechar e imprimir antes de imprimir
+        $('#close-modal, #close-modal2, #print-modal').hide();
+        var conteudo = $('.sermao-container').html();
+        $('#close-modal, #close-modal2, #print-modal').show();
+        var minhaJanela = window.open('', 'Print-Window', 'width=1200 height=800');
+        window.close();
+        minhaJanela.document.open();
+        minhaJanela.document.write('<html><head><title>{titulo}</title><style>.sermao-container { text-align: justify; font-family: Georgia, "Times New Roman", serif;  } .sermao-titulo { font-size: 1.6em; font-weight: bold; margin-bottom: 10px; text-align: center; } .sermao-texto { font-size: 1.0em; text-align: justify; } @media print { @page { margin: 0; padding: 15mm; } body { margin: 0; } }</style></head><body onload="window.print()">' + conteudo + '</body></html>');
+        minhaJanela.document.close();
+        minhaJanela.onafterprint = function () {
+            minhaJanela.close();
+        };
+    });
+
+
+    $(document).keydown(function (e) {
+        if (e.key === "Escape") {
+            window.close();
+            $('[widget="TWindow"]').remove();
+
+        }
+    });
+
+</script>
+
+</html>

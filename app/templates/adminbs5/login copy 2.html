@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html class="notranslate" translate="no" data-bs-theme="light" data-menu-theme="dark" data-public="yes">
+<head>
+    <title>{title}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="manifest" href="manifest.json?appver=810">
+    <link rel="shortcut icon" type="image/png" href="favicon.png"/>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="apple-touch-icon" sizes="180x180" href="app/images/icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="app/vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="app/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="app/vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="app/vendor/select2/select2.min.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="app/vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="app/templates/adminbs5/util.css">
+	<link rel="stylesheet" type="text/css" href="app/templates/adminbs5/main.css">
+<!--===============================================================================================-->
+    
+    {LIBRARIES}
+    {HEAD}
+    
+    <script src="app/lib/include/admin.js?appver=810" type="text/javascript"></script>
+    <link href="app/lib/include/admin.css?appver=810" rel="stylesheet" type="text/css" media="screen">
+    
+    <script src="app/templates/{template}/js/theme.js?appver=810"></script>
+    <link rel="stylesheet" href="app/templates/{template}/theme.css?appver=810">
+    <link href="app/templates/adminbs5/custom.css" rel="stylesheet" type="text/css" media="screen" />
+    
+    <style>
+        .imagem-fundo {
+            height: 100vh;
+            /* background-color: black; */
+            background-image: url('app/images/biblia-aberta.avif') !important;
+            background-size: 100% 100%;
+            /* Faz a imagem preencher todo o espaço */
+            background-position: center left;
+            /* Centraliza a imagem */
+            background-repeat: no-repeat;
+            /* Evita que a imagem se repita */
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+  
+    </style>
+        <script>
+        $(function() {
+            // Start framework.
+            Adianti.configure({adianti_options});
+            Adianti.start();
+            
+            // Start template.
+            Template.configure({template_options}, 'login');
+            Template.start();
+        });
+    </script>
+</head>
+
+
+<body style="background-color: #666666;">
+	
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<form type="post" class="login100-form validate-form">
+					<span class="login100-form-title p-b-43">
+						DIGITE SEUS DADOS
+					</span>
+					
+					
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="text" name="login">
+						<span class="focus-input100"></span>
+						<span class="label-input100">Usuário</span>
+					</div>
+					
+					
+					<div class="wrap-input100 validate-input" data-validate="Password is required">
+						<input class="input100" type="password" name="password">
+						<span class="focus-input100"></span>
+						<span class="label-input100">Senha</span>
+					</div>
+
+
+			
+
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn">
+							Login
+						</button>
+					</div>
+					
+
+				</form>
+
+				<div class="login100-more" style="background-image: url('app/images/biblia-aberta.avif');">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+
+	
+	
+<!--===============================================================================================-->
+	<script src="app/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="app/vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="app/vendor/bootstrap/js/popper.js"></script>
+	<script src="app/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="app/vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="app/vendor/daterangepicker/moment.min.js"></script>
+	<script src="app/vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="app/vendor/countdowntime/countdowntime.js"></script>
+<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+
+</body>
+</html>

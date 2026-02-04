@@ -1,0 +1,26 @@
+<menu>
+    <menuitem>
+      <action>Sermoes</action>
+      <title>Sermões</title>
+      <label>Sermões</label>
+      <mobile>Y</mobile>
+    </menuitem>
+    <menuitem>
+      <action>EstudosBiblicos</action>
+      <title>Estudos Bíblicos</title>
+      <label>Estudos Bíblicos</label>
+      <mobile>Y</mobile>
+    </menuitem>
+    <menuitem>
+      <action>TeologiaSistematica</action>
+      <title>Teologia Sistemática</title>
+      <label>Teologia Sistemática</label>
+      <mobile>Y</mobile>
+    </menuitem>
+    <menuitem>
+      <action>LoginForm</action>
+      <title>_t{Login}</title>
+      <label>_t{Login}</label>
+      <mobile>Y</mobile>
+    </menuitem>
+</menu>

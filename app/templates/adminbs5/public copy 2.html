@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{title}</title>
+    {LIBRARIES}
+    {HEAD}
+
+    <!-- Bootstrap Core CSS -->
+    <link href="app/templates/adminbs5/blog/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="app/templates/adminbs5/blog/css/clean-blog.min.css" rel="stylesheet">
+    <link href="app/templates/adminbs5/custom.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="app/templates/adminbs5/blog/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet"
+        type="text/css">
+    <link href='app/templates/adminbs5/blog/css/font_googleapis_lora.css' rel='stylesheet' type='text/css'>
+    <link href='app/templates/adminbs5/blog/css/font_googleapis_open_sans.css' rel='stylesheet' type='text/css'>
+    <link href="app/templates/adminbs5/custom.css" rel="stylesheet" type="text/css">
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+        #menu-acima {
+            background-image: url('app/templates/adminbs5/blog/img/biblia-na-mesa-2.avif');
+            padding-top: 50px;
+            height: 30vh;
+        }
+
+        .titulo-site h1,
+        .titulo-site h2 {
+            padding: 0;
+            margin: 0;
+            padding-top: 15px;
+        }
+
+        @media (max-width: 576px) {
+            #menu-acima {
+                padding-top: 60px !important;
+                padding-bottom: 0 !important;
+                height: 40vh;
+            }
+
+            #topMenu {
+                padding-top: 0.25rem;
+                padding-bottom: 0.25rem;
+            }
+
+            #topMenu .container-fluid {
+                padding-top: 0;
+                padding-bottom: 0;
+                align-items: center;
+            }
+
+            #barramenu {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+
+            }
+
+            #barramenu .nav-link {
+                padding: 2px 6px;
+                line-height: 1.1;
+                font-size: 0.9rem;
+            }
+
+            #barramenu .nav-item {
+                padding: 0;
+                margin: 0 1px;
+                font-size: 0.5em;
+
+            }
+
+            .intro-header {
+                padding-top: 40px !important;
+                height: auto;
+            }
+
+            .intro-header hr {
+                display: none;
+            }
+
+            .meu-menu {
+                font-size: 24px !important;
+            }
+        }
+
+        @media (max-width: 576px) and (orientation: landscape) {
+            #menu-acima {
+                padding-top: 30px !important;
+                padding-bottom: 0 !important;
+                height: 50vh;
+            }
+
+        }
+    </style>
+
+
+
+</head>
+
+<body>
+
+    <nav id="topMenu" class="navbar navbar-expand-lg" style="background-color: transparent;">
+        <div class="container-fluid justify-content-end">
+            {MENUTOP}
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header id="menu-acima" class="intro-header" style="">
+
+        <div class="titulo-site">
+            <h1>Teologia Simplificada</h1>
+            <hr class="small">
+            <h2>Um blog com modelos de sermões e estudos bíblicos</h2>
+            <hr class="small">
+            {DEVOCIONAL}
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container" style="width: 100%">
+        <div class="container row" style="width: 100%">
+            <div style="margin: 0; padding: 0;" class="col-md-6">
+                <div class="row">
+                    <p style="font-weight: bold; font-size: 1.2em; text-decoration: underline;">ÚLTIMOS SERMÕES</p>
+                    <div class="col-lg-10"> <!--Os posts ficam dentro desta div-->
+                        {SERMOES}
+                    </div>
+                </div>
+            </div>
+            <div style="margin: 0; padding: 0;" class="col-md-6">
+                <div class="row">
+                    <p style="font-weight: bold; font-size: 1.2em; text-decoration: underline;">ÚLTIMOS ESTUDOS</p>
+                    <div class="col-lg-10"> <!--Os posts ficam dentro desta div-->
+                        {ESTUDOS}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted">Copyright &copy; Your Website 2016</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Contact Form JavaScript -->
+
+    <script src="app/lib/include/admin.js?appver=840" type="text/javascript"></script>
+
+    <script src="app/templates/{template}/js/theme.js?appver=840"></script>
+    <!--[ISCREATOR]-->
+    <script src="app/templates/{template}/js/creator.js?appver={buildid}"></script>
+    <!--[/ISCREATOR]-->
+
+
+    <div id="adianti_online_content"></div>
+
+    <script>
+        // Garante que o Adianti processe as requisições AJAX corretamente
+        $.ajaxSetup({ cache: false });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var topMenu = document.getElementById('topMenu');
+            var lastScrollTop = 0;
+
+            window.addEventListener('scroll', function () {
+                var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                if (scrollTop < lastScrollTop) {
+                    // Rolando para baixo
+                    topMenu.classList.remove('nav-up');
+                } else {
+                    // Rolando para cima
+                    topMenu.classList.add('nav-up');
+                }
+                lastScrollTop = scrollTop;
+            });
+        });
+    </script>
+
+</body>
+
+</html>
