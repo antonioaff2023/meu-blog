@@ -1,7 +1,5 @@
 <?php
 require_once 'init.php';
-require_once 'app/lib/app/SermoesViews.php';
-require_once 'app/lib/app/DevocionalView.php';
 require_once 'app/lib/app/MeuRenderer.php';
 $sermoes = SermoesViews::render(1); // 1 = Sermões
 $estudos = SermoesViews::render(2); // 2 = Estudos Bíblicos
