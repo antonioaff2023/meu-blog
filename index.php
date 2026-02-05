@@ -21,7 +21,7 @@ if ($class == 'LoginForm'  || $class == 'SermoesPublicosView')
     $ini['general']['public_view'] = '0';
 }
 
-
+// Teste
 if ( TSession::getValue('logged') )
 {
     if (isset($_REQUEST['template']) AND $_REQUEST['template'] == 'iframe')
