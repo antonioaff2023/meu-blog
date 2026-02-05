@@ -129,6 +129,7 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
                     p {
                         margin: 0 0 0 0;
                         padding: 0;
+
                     }
 
                     @media (max-width: 768px) {
@@ -190,6 +191,9 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
                     </h3>
                     <p><strong>Texto:</strong> {$sermao->passagem}</p>
                     <p class='data-postagem'>{$acao} - {$data_extenso}</p>
+                    <hr style="height: 2px; background: black; margin: 10px 0; width: 50%;">
+                    
+                     
                 </div>
             HTML;
         }

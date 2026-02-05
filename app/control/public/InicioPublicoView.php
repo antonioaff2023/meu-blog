@@ -19,43 +19,26 @@ class InicioPublicoView extends TPage
     {
         parent::__construct();
 
-              
-        // Exibe os três últimos sermões publicados
-        $div1 = new TElement('div');
-        $div1->class = 'row';
-        $titulo1 = new TElement('h2');
-        $titulo1->class = 'titulo-ponto';
-        $titulo1->add('Últimos Sermões');
-        $sermões= $this->UltimosSermoes(1);        
-        $div1->add($titulo1);
-        $div1->add($sermões);
-
-
-        //Exibe os três últimos estudos publicados
-        $div2 = new TElement('div');
-        $div2->class = 'row';
-        $titulo2 = new TElement('h2');
-        $titulo2->class = 'titulo-ponto';
-        $titulo2->add('Resumos dos últimos estudos');
-        $estudos= $this->UltimosSermoes(2);        
-        $div2->add($titulo2);
-        $div2->add($estudos);
+        $sermões = $this->UltimosSermoes(1);
+        $estudos = $this->UltimosSermoes(2);
         
-
-
+        $estilo = "style='font-size: 1.3em; font-weight: bold; color: black; border-bottom: 2px solid black;'";
+        $panel = new TPanelGroup('');
+        $panel->style = 'margin-top: -3%; background-color: transparent; box-shadow: none; border: none;';
+        $table = new TTable;
+        $table->style = 'border-collapse:collapse';
+        $table->width = '100%';
+        $table->addRowSet("<span $estilo>ÚLTIMOS SERMÕES</span>", "<span $estilo>RESUMOS DOS ÚLTIMOS ESTUDOS</span>");
+        $table->addRowSet($sermões, $estudos);
+        $panel->add($table);
 
 
         // vertical box container
         $container = new TVBox;
         $container->style = 'width: 90%; margin: auto; padding: 10px;';
-        
-        // $container->add(new TXMLBreadCrumb('menu.xml', __CLASS__));
 
 
-        $tela = $this->onDivideTela($div1, $div2, '40%', '40%');
-        // $container->add($css);
-        
-        $container->add($tela);
+        $container->add($panel);
 
         parent::add($container);
     }
