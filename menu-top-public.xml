@@ -19,8 +19,8 @@
     </menuitem>
     <menuitem>
       <action>LoginForm</action>
-      <title>_t{Login}</title>
-      <label>_t{Login}</label>
+      <title>Administrador</title>
+      <label>Administrador</label>
       <mobile>Y</mobile>
     </menuitem>
 </menu>

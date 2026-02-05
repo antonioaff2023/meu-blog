@@ -13,7 +13,8 @@
 class InicioPublicoView extends TPage
 {
 
-    use Adianti\Base\Meutrait;
+    use app\MeuTrait;
+
 
     public function __construct()
     {
@@ -23,22 +24,29 @@ class InicioPublicoView extends TPage
         $estudos = $this->UltimosSermoes(2);
         
         $estilo = "style='font-size: 1.3em; font-weight: bold; color: black; border-bottom: 2px solid black;'";
-        $panel = new TPanelGroup('');
-        $panel->style = 'margin-top: -3%; background-color: transparent; box-shadow: none; border: none;';
-        $table = new TTable;
-        $table->style = 'border-collapse:collapse';
-        $table->width = '100%';
-        $table->addRowSet("<span $estilo>ÚLTIMOS SERMÕES</span>", "<span $estilo>RESUMOS DOS ÚLTIMOS ESTUDOS</span>");
-        $table->addRowSet($sermões, $estudos);
-        $panel->add($table);
 
+        $div_principal = new TElement('div');
+        $div_principal->style = 'text-align: left; display: flex; gap: 20px; margin-top: -4%;';
+
+        $div_sermoes = new TElement('div');
+        $div_sermoes->style = 'flex: 1;';
+        $div_sermoes->add("<span $estilo>ÚLTIMOS SERMÕES</span>");
+        $div_sermoes->add($sermões);
+
+        $div_estudos = new TElement('div');
+        $div_estudos->style = 'flex: 1;';
+        $div_estudos->add("<span $estilo>RESUMOS DOS ÚLTIMOS ESTUDOS</span>");
+        $div_estudos->add($estudos);
+
+        $div_principal->add($div_sermoes);
+        $div_principal->add($div_estudos);
 
         // vertical box container
         $container = new TVBox;
-        $container->style = 'width: 90%; margin: auto; padding: 10px;';
+        $container->style = 'width: 70%; margin: auto; padding: 10px; ';
 
 
-        $container->add($panel);
+        $container->add($div_principal);
 
         parent::add($container);
     }

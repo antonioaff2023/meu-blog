@@ -1,12 +1,15 @@
 <?php
 
-namespace Adianti\Base;
+namespace app;
 
 use Adianti\Core\AdiantiCoreTranslator;
 use Adianti\Widget\Base\TElement;
 use Adianti\Widget\Dialog\TMessage;
 use Adianti\Database\TTransaction;
 use Adianti\Widget\Dialog\TToast;
+use Adianti\Base\AdiantiStandardCollectionTrait;
+use Adianti\Base\AdiantiStandardListExportTrait;
+use Adianti\Base\AdiantiStandardListTrait;
 use DateTime;
 use Postagens;
 use IntlDateFormatter;
