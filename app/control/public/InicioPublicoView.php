@@ -35,7 +35,7 @@ class InicioPublicoView extends TPage
 
         $div_estudos = new TElement('div');
         $div_estudos->style = 'flex: 1;';
-        $div_estudos->add("<span $estilo>RESUMOS DOS ÚLTIMOS ESTUDOS</span>");
+        $div_estudos->add("<span $estilo>RESUMOS DOS ÚLTIMOS ESTUDOS - </span>");
         $div_estudos->add($estudos);
 
         $div_principal->add($div_sermoes);
