@@ -13,7 +13,8 @@
 class InicioPublicoView extends TPage
 {
 
-    use app\Meutrait;
+    use app\MeuTrait;
+
 
     public function __construct()
     {
