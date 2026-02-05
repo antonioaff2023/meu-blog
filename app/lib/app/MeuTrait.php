@@ -1,6 +1,6 @@
 <?php
 
-namespace Adianti\Base;
+namespace app;
 
 use Adianti\Core\AdiantiCoreTranslator;
 use Adianti\Widget\Base\TElement;
