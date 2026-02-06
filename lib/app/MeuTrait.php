@@ -187,7 +187,7 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
             $html .= <<<HTML
                 <div class="postagem">
                     <h3>
-                        <a href="/index.php?class=SermoesPublicosView&id={$sermao->id}"
+                        <a href="/index.php?class=InicioPublicoView&method=onGeraPDF&id={$sermao->id}"
                         generator="adianti"
                         target="modal">{$titulo}
                         </a>

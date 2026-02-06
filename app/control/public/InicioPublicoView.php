@@ -22,7 +22,7 @@ class InicioPublicoView extends TPage
 
         $sermões = $this->UltimosSermoes(1);
         $estudos = $this->UltimosSermoes(2);
-        
+
         $estilo = "style='font-size: 1.3em; font-weight: bold; color: black; border-bottom: 2px solid black;'";
 
         $div_principal = new TElement('div');
@@ -49,5 +49,10 @@ class InicioPublicoView extends TPage
         $container->add($div_principal);
 
         parent::add($container);
+    }
+
+    public function onGeraPDF($param)
+    {
+       var_dump($param);
     }
 }
