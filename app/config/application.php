@@ -49,6 +49,7 @@ return [
           'SermoesPublicosView',
           'DevocionalPublicaView',
           'InicioPublicoView', 
+          'GeraPDF',
         ],
         'user_register' => '0',
         'reset_password' => '0',
