@@ -25,7 +25,7 @@ class ListaSermoes extends TStandardList
     protected $deleteButton;
     protected $transformCallback;
 
-    use MinhaTrait;
+    use app\MeuTrait;
     /**
      * Page constructor
      */
@@ -207,7 +207,7 @@ class ListaSermoes extends TStandardList
         //Cria as ações do data grid
         $action1 = new TDataGridAction(['FormMeusPosts', 'onEdit'],   ['id' => '{id}']);
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id' => '{id}']);
-        $action3 = new TDataGridAction(['SermoesPublicosView', 'onEdit'],   ['id' => '{id}']);
+        $action3 = new TDataGridAction([$this, 'onGeraPDF'],   ['id' => '{id}']);
 
         $this->datagrid->addAction($action1, 'Editar', 'fa:pen-to-square blue');
         $this->datagrid->addAction($action2, 'Apagar', 'far:trash-alt red');
@@ -339,4 +339,6 @@ class ListaSermoes extends TStandardList
             TTransaction::rollback();
         }
     }
+
+
 }

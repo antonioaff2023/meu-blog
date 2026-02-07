@@ -10,6 +10,8 @@ use Adianti\Widget\Dialog\TToast;
 use Adianti\Base\AdiantiStandardCollectionTrait;
 use Adianti\Base\AdiantiStandardListExportTrait;
 use Adianti\Base\AdiantiStandardListTrait;
+use Adianti\Widget\Template\THtmlRenderer;
+use Adianti\Widget\Container\TVBox;
 use DateTime;
 use Postagens;
 use IntlDateFormatter;
@@ -188,8 +190,7 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
                 <div class="postagem">
                     <h3>
                         <a href="/index.php?class=InicioPublicoView&method=onGeraPDF&id={$sermao->id}"
-                        generator="adianti"
-                        target="modal">{$titulo}
+                        generator="adianti">{$titulo}
                         </a>
                     </h3>
                     <p><strong>Texto:</strong> {$sermao->passagem}</p>
@@ -202,5 +203,90 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
         }
 
         return $html;
+    }
+
+    public function onGeraPDF($param)
+    {
+
+        try {
+
+
+            TTransaction::open('sample');
+            $GerandoPDF = Postagens::find($param['id']);
+            TTransaction::close();
+
+            // processa um template de página em HTML
+            $html = <<<EOF
+                    <body class="corpo-sermao">
+                        <div class="sermao-container">
+                            <div class="sermao-titulo">
+                                <h2>{$GerandoPDF->titulo}</h2>
+                            </div>
+
+                            <hr>
+                            <div class="sermao-texto">
+                                {$GerandoPDF->conteudo}
+                            </div>
+                        </div>
+                    </body>
+
+            EOF;
+
+
+
+            // converte o modelo HTML em PDF
+            $dompdf = new \Dompdf\Dompdf();
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+
+
+
+            // Exclui os arquivos PDF antigos
+            $files = glob('app/output/*.pdf');
+            foreach ($files as $file) {
+                if (is_file($file)) {
+                    unlink($file);
+                }
+            }
+
+            $current_datetime = date('Ymd_His');
+
+            $file = 'app/output/export_' . $current_datetime . '.pdf';
+
+            // gravar e abrir arquivo
+            file_put_contents($file, $dompdf->output());
+
+
+            $mostra = $this->retornaModal($file);
+
+            $container = new TVBox;
+            $container->style = 'width: 100%';
+            $container->add($mostra);
+            parent::add($container);
+        } catch (Exception $e) {
+            new TMessage('error', 'Erro ao gerar PDF: ' . $e->getMessage());
+        }
+    }
+
+    public function retornaModal($file)
+    {
+
+        // processa um template de página em HTML
+        $mostra = new THtmlRenderer('app/resources/modal_pdf.html');
+
+        $replaces = [];
+        $replaces['file'] = $file;
+        $mostra->enableSection('main', $replaces);
+
+
+        return $mostra;
+    }
+
+        //Limpa o formulário
+    public function onLimpa($param)
+    {
+        $this->form->clear();
+        $this->form->setData(new stdClass);
     }
 }

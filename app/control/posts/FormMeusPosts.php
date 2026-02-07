@@ -29,7 +29,7 @@ class FormMeusPosts extends TPage
     private $form; // Formulário
 
     use Adianti\Base\AdiantiStandardFormTrait; // Standard form methods
-    use Adianti\Base\MeuTrait;
+    use app\MeuTrait; // Trait para métodos personalizados
 
     public function __construct($param)
     {
@@ -50,6 +50,14 @@ class FormMeusPosts extends TPage
         // Criação dos campos do formulário com base na tabela tbl_postagem
         $id = new THidden('id');
         $titulo = new TEntry('titulo');
+
+        if (!empty($param['id_tipo'])) {
+            $tipo = $param['id_tipo'];
+        } else {
+            $tipo = 1;
+        }
+
+
         $titulo->style = $fundo_campo;
         $subtitulo = new TEntry('subtitulo');
         $subtitulo->style = $fundo_campo;
@@ -261,13 +269,20 @@ class FormMeusPosts extends TPage
         //Insere botões no formulário
         $tamanho_botao = "width: 25mm;";
         $btn = $this->form->addAction(_t('Save'),  new TAction([$this, 'onSalva']),  'fa:save white');
-        $btn->class = 'btn btn-success';
+        $btn->class = 'btn btn-sm btn-success';
         $btn->style = $tamanho_botao;
 
 
         $btn2 = $this->form->addAction('Limpar', new TAction([$this, 'onClear']), 'fa:eraser white');
-        $btn2->class = 'btn btn-danger';
+        $btn2->class = 'btn btn-sm btn-danger';
         $btn2->style = $tamanho_botao;
+
+                //Cria o botão de novo
+        $btn = $this->form->addAction('Novo', new TAction(['FormMeusPosts', 'onEdit'], ['tipo' => $tipo]), 'fa:plus black');
+        $btn->class = 'btn btn-sm btn-info';
+        $btn->setLabel('Novo');
+        $btn->style = $tamanho_botao;
+
 
         //Insere campos da coluna esquerda
 

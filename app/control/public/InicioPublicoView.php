@@ -12,7 +12,7 @@
 class InicioPublicoView extends TPage
 {
 
-    use app\Meutrait;
+    use app\MeuTrait;
 
     public function __construct()
     {
@@ -42,81 +42,5 @@ class InicioPublicoView extends TPage
         parent::add($container);
     }
 
-    public function onGeraPDF($param)
-    {
 
-        try {
-
-
-            TTransaction::open('sample');
-            $GerandoPDF = Postagens::find($param['id']);
-            TTransaction::close();
-
-            // processa um template de página em HTML
-            $html = <<<EOF
-                    <body class="corpo-sermao">
-                        <div class="sermao-container">
-                            <div class="sermao-titulo">
-                                <h2>{$GerandoPDF->titulo}</h2>
-                            </div>
-
-                            <hr>
-                            <div class="sermao-texto">
-                                {$GerandoPDF->conteudo}
-                            </div>
-                        </div>
-                    </body>
-
-            EOF;    
-
-            
-
-            // converte o modelo HTML em PDF
-            $dompdf = new \Dompdf\Dompdf();
-            $dompdf->loadHtml($html);
-            $dompdf->setPaper('A4', 'portrait');
-            $dompdf->render();
-
-
-
-            // Exclui os arquivos PDF antigos
-            $files = glob('app/output/*.pdf');
-            foreach ($files as $file) {
-                if (is_file($file)) {
-                    unlink($file);
-                }
-            }
-
-            $current_datetime = date('Y-m-d_H-i-s');
-
-            $file = 'app/output/export_' . $current_datetime . '.pdf';
-
-            // gravar e abrir arquivo
-            file_put_contents($file, $dompdf->output());
-
-
-            $mostra = $this->retornaModal($file);
-
-            $container = new TVBox;
-            $container->style = 'width: 100%';
-            $container->add($mostra);
-            parent::add($container);
-        } catch (Exception $e) {
-            new TMessage('error', 'Erro ao gerar PDF: ' . $e->getMessage());
-        }
-    }
-
-    function retornaModal($file)
-    {
-
-        // processa um template de página em HTML
-        $mostra = new THtmlRenderer('app/resources/modal_pdf.html');
-
-        $replaces = [];
-        $replaces['file'] = $file;
-        $mostra->enableSection('main', $replaces);
-
-
-        return $mostra;
-    }
 }

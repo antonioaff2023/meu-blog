@@ -1,6 +1,7 @@
 <?php
 
 use Adianti\Database\TTransaction;
+use app\MeuTrait;
 
 class DevocionalView 
 {
@@ -76,9 +77,8 @@ class DevocionalView
                     
                     <h3>
                         <span class="texto-devocional" >MEDITAÇÃO DO DIA - </span>
-                        <a class="texto-devocional" href="/index.php?class=SermoesPublicosView&id={$devocional->id}"
-                        generator="adianti"
-                        target="modal">{$titulo} ({$devocional->passagem})
+                        <a class="texto-devocional" href="/index.php?class=InicioPublicoView&method=onGeraPDF&id={$devocional->id}"
+                        generator="adianti">{$titulo} ({$devocional->passagem})
                         </a>
 
                     </h3>
