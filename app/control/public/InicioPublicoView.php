@@ -21,7 +21,7 @@ class InicioPublicoView extends TPage
         $sermões = $this->UltimosSermoes(1);
         $estudos = $this->UltimosSermoes(2);
 
-        $estilo = "style='font-size: 1.3em; font-weight: bold; color: black; border-bottom: 2px solid black;'";
+        $estilo = "style='font-size: clamp(.7em, 2.5vw, 1.4em); font-weight: bold; color: black; border-bottom: 2px solid black;'";
         $panel = new TPanelGroup('');
         $panel->style = 'margin-top: -3%; background-color: transparent; box-shadow: none; border: none;';
         $table = new TTable;

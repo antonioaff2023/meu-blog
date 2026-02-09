@@ -119,13 +119,13 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
         $html = "<style>
                     * { margin: 0; padding: 0; }
                     h3 {
-                        font-size: 1.2em;
+                        font-size: clamp(.8em, 2.5vw, 1.2em);
                         margin-bottom: 5px;
                         color: #ffffff;
                     }
 
                     .texto-devocional {
-                        font-size: 1em;
+                        font-size: clamp(.8em, 2.5vw, 1em);
                         margin-bottom: 10px;
                         color: #ffffff;
                         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -139,7 +139,7 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
 
                     @media (max-width: 768px) {
                         h3 {
-                            font-size: 1em;
+                            font-size: clamp(.8em, 2.5vw, 1em);
                         }
                         .texto-devocional {
                             font-size: 0.7em;
@@ -156,6 +156,7 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
                         p {
                             font-size: 0.85em;
                         }
+
                     }
                 </style>";
 
@@ -189,12 +190,12 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
             $html .= <<<HTML
                 <div class="postagem">
                     <h3>
-                        <a href="/index.php?class=InicioPublicoView&method=onGeraPDF&id={$sermao->id}"
+                        <a style="font-size: clamp(.8em, 2.5vw, 1.0em);" href="/index.php?class=InicioPublicoView&method=onGeraPDF&id={$sermao->id}"
                         generator="adianti">{$titulo}
                         </a>
                     </h3>
-                    <p><strong>Texto:</strong> {$sermao->passagem}</p>
-                    <p class='data-postagem'>{$acao} - {$data_extenso}</p>
+                    <span style="font-size: clamp(.8em, 2.5vw, 1em);"><p><strong>Texto:</strong> {$sermao->passagem}</p>
+                    <p class='data-postagem'>{$acao} - {$data_extenso}</p></span>
                     <hr style="height: 2px; background: black; margin: 10px 0; width: 50%;">
                     
                      
