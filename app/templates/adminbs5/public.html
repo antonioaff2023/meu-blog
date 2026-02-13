@@ -113,17 +113,17 @@
 
         @media (max-height: 800px) {
             #menu-acima {
-                padding-top: 80px !important;
+                padding-top: 60px !important;
                 padding-bottom: 0 !important;
-                height: 30vh;
+                height: clamp(30vh, 40vh, 50vh);
             }
         }
 
         @media (max-height: 600px) {
             #menu-acima {
-                padding-top: 90px !important;
+                padding-top: 40px !important;
                 padding-bottom: 0 !important;
-                height: 40vh;
+                height: clamp(50vh, 60vh, 65vh);
             }
         }
 
@@ -131,7 +131,7 @@
             #menu-acima {
                 padding-top: 100px !important;
                 padding-bottom: 0 !important;
-                height: 80vh;
+                height: clamp(40vh, 50vh, 60vh);
             }
         }
     </style>

@@ -8,6 +8,8 @@ for %%i in ("%CD%") do set "nomeDiretorio=%%~nxi"
 :: Definir o caminho de destino
 set "copiaPara=O:\"
 
+:: Teste
+
 :: Executar a cópia usando robocopy
 robocopy  "%source_dir%" %copiaPara% /XO 
 
