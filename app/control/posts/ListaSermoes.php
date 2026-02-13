@@ -36,6 +36,8 @@ class ListaSermoes extends TStandardList
         parent::setDatabase('sample');            // Define a base de dados
         parent::setActiveRecord('Postagens');   // Define o registro ativo
         parent::setDefaultOrder('data_postagem', 'desc');         // Define a ordem padrão
+
+
         parent::setLimit(7);                    // Define o limite de registros por página
 
 
@@ -46,7 +48,7 @@ class ListaSermoes extends TStandardList
         //Cria os campos do formulário
         $id = new THidden('id');
         $titulo = new TEntry('titulo');
-        $id_tipo = new THidden('id_tipo');
+
 
         if (!empty($param['id_tipo'])) {
             $tipo = $param['id_tipo'];
@@ -65,6 +67,12 @@ class ListaSermoes extends TStandardList
             $titulopanel = 'Devocionais';
         }
 
+        $id_tipo = new THidden('id_tipo');
+        $tipo = $param['id_tipo'] ?? 1; // Define 1 como padrão se vier vazio
+        $id_tipo->setValue($tipo);
+
+
+
         $this->form->setFormTitle($tituloform);
 
         //Data postagem no formato dd/mm/yyyy
@@ -82,6 +90,7 @@ class ListaSermoes extends TStandardList
         $passagem_lbl = new TLabel('Passagem');
 
         $this->form->setFields([$titulo, $data_postagem, $passagem, $id, $id_tipo]);
+
 
         //Cria div para linha única para os campos
         $dv_linha =  new TElement('div');
@@ -170,14 +179,12 @@ class ListaSermoes extends TStandardList
                 $date = new DateTime($value);
                 $dayOfWeek = $date->format('w'); // 0 (domingo) a 6 (sábado)
                 $formattedDate = $date->format('d/m/Y');
-                
-                if ($dayOfWeek == 0 ) { // Domingo ou Sábado
+
+                if ($dayOfWeek == 0) { // Domingo ou Sábado
                     return "<span style='color: red;'>{$formattedDate}</span>";
-                }
-                else if ($dayOfWeek == 6 ) {
+                } else if ($dayOfWeek == 6) {
                     return "<span style='color: blue;'>{$formattedDate}</span>";
-                }
-                 else {
+                } else {
                     return $formattedDate;
                 }
             }
@@ -243,25 +250,27 @@ class ListaSermoes extends TStandardList
     public function onReload($param = null)
     {
         try {
-            TTransaction::open('sample'); // Substitua pelo nome do seu banco, se necessário
-
-            if (empty($param['offset'])) {
-                $param['offset'] = 0;
-            }
-
-
-            // Cria um repositório para a tabela
+            TTransaction::open('sample');
             $repository = new TRepository('Postagens');
             $limit = 7;
-
-
-            // Cria um critério de seleção
             $criteria = new TCriteria;
 
-            if (!empty($param['passagem'])) {
-                $passagem_filter = $param['passagem'];
-                $criteria->add(new TFilter('passagem', 'LIKE', "%{$passagem_filter}%"));
+            // 1. Recupera o id_tipo do param ou da sessão para não perder na paginação
+            if (isset($param['id_tipo'])) {
+                $tipo = $param['id_tipo'];
+                TSession::setValue(__CLASS__ . '_id_tipo', $tipo);
+            } else {
+                $tipo = TSession::getValue(__CLASS__ . '_id_tipo');
+            }
 
+            // 2. Aplica o filtro obrigatório de tipo
+            if ($tipo) {
+                $criteria->add(new TFilter('id_tipo', '=', $tipo));
+            }
+
+            // 3. Filtros de pesquisa do formulário (mantenha sua lógica atual)
+            if (!empty($param['passagem'])) {
+                $criteria->add(new TFilter('passagem', 'LIKE', "%{$param['passagem']}%"));
             }
 
             if (!empty($param['data_postagem'])) {
@@ -269,41 +278,20 @@ class ListaSermoes extends TStandardList
                 $criteria->add(new TFilter('data_postagem', '=', $data_filter));
             }
 
-            // Adiciona filtros com base no formulário
             if (!empty($param['titulo'])) {
                 $filter_text = $param['titulo'];
-
-                // Cria subcritério com filtros OR
                 $sub_criteria = new TCriteria;
                 $sub_criteria->add(new TFilter('titulo', 'LIKE', "%{$filter_text}%"), TExpression::OR_OPERATOR);
                 $sub_criteria->add(new TFilter('subtitulo', 'LIKE', "%{$filter_text}%"), TExpression::OR_OPERATOR);
                 $sub_criteria->add(new TFilter('tags', 'LIKE', "%{$filter_text}%"), TExpression::OR_OPERATOR);
-
-                // Adiciona o subcritério ao critério principal
                 $criteria->add($sub_criteria);
             }
 
-
-            // Filtra o id_tipo
-            if (!empty($param['id_tipo'])) {
-                $tipo = $param['id_tipo'];
-                $criteria->add(new TFilter('id_tipo', '=', $tipo));
-            }
-
-
-
-            // Ordenação
-            if (!empty($param['order'])) {
-                $criteria->setProperty('order', $param['order']);
-                $criteria->setProperty('direction', 'asc');
-            } else {
-                $criteria->setProperty('order', 'data_postagem');
-                $criteria->setProperty('direction', 'desc');
-            }
-
-            // Paginação
+            // Configurações de exibição
             $criteria->setProperty('limit', $limit);
-            $criteria->setProperty('offset', $param['offset']);
+            $criteria->setProperty('offset', $param['offset'] ?? 0);
+            $criteria->setProperty('order', $param['order'] ?? 'data_postagem');
+            $criteria->setProperty('direction', $param['direction'] ?? 'desc');
 
             $objects = $repository->load($criteria, FALSE);
 
@@ -314,24 +302,13 @@ class ListaSermoes extends TStandardList
                 }
             }
 
-
-            // Conta os registros e atualiza a paginação
-            $criteria->resetProperties();
-            $count = $repository->count($criteria);
-            $page = isset($param['offset']) ? $param['offset'] / $limit + 1 : 1;
-
-            // Atualiza paginação
-            $this->pageNavigation->setCount($count);
+            // Atualiza a navegação passando o id_tipo de volta nos parâmetros
+            $this->pageNavigation->setCount($repository->count($criteria));
             $this->pageNavigation->setLimit($limit);
 
-            // Garante que 'offset' está no param para manter a posição
-            if (!isset($param['offset'])) {
-                $param['offset'] = 0;
-            }
-
-
+            // Importante: fundir os parâmetros atuais para manter o id_tipo nos links de página
             $this->pageNavigation->setProperties($param);
-
+            // $this->pageNavigation->setParameter('id_tipo', $tipo);
 
             TTransaction::close();
         } catch (Exception $e) {
@@ -339,6 +316,4 @@ class ListaSermoes extends TStandardList
             TTransaction::rollback();
         }
     }
-
-
 }
