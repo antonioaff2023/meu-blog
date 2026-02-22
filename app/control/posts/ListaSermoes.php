@@ -251,11 +251,16 @@ class ListaSermoes extends TStandardList
     {
         try {
             TTransaction::open('sample');
-            $repository = new TRepository('Postagens');
-            $limit = 7;
-            $criteria = new TCriteria;
 
-            // 1. Recupera o id_tipo do param ou da sessão para não perder na paginação
+            $repository = new TRepository('Postagens');
+            $limit      = 7;
+            $criteria   = new TCriteria;
+
+            $param = (array) $param;
+
+            /* =========================
+         * 1. Controle do id_tipo
+         * ========================= */
             if (isset($param['id_tipo'])) {
                 $tipo = $param['id_tipo'];
                 TSession::setValue(__CLASS__ . '_id_tipo', $tipo);
@@ -263,57 +268,73 @@ class ListaSermoes extends TStandardList
                 $tipo = TSession::getValue(__CLASS__ . '_id_tipo');
             }
 
-            // 2. Aplica o filtro obrigatório de tipo
-            if ($tipo) {
+            if (!empty($tipo)) {
                 $criteria->add(new TFilter('id_tipo', '=', $tipo));
+                $param['id_tipo'] = $tipo; // garante persistência na navegação
             }
 
-            // 3. Filtros de pesquisa do formulário (mantenha sua lógica atual)
+            /* =========================
+         * 2. Filtros de pesquisa
+         * ========================= */
             if (!empty($param['passagem'])) {
                 $criteria->add(new TFilter('passagem', 'LIKE', "%{$param['passagem']}%"));
             }
 
             if (!empty($param['data_postagem'])) {
-                $data_filter = TDate::date2us($param['data_postagem']);
-                $criteria->add(new TFilter('data_postagem', '=', $data_filter));
+                $data = TDate::date2us($param['data_postagem']);
+                $criteria->add(new TFilter('data_postagem', '=', $data));
             }
 
             if (!empty($param['titulo'])) {
-                $filter_text = $param['titulo'];
-                $sub_criteria = new TCriteria;
-                $sub_criteria->add(new TFilter('titulo', 'LIKE', "%{$filter_text}%"), TExpression::OR_OPERATOR);
-                $sub_criteria->add(new TFilter('subtitulo', 'LIKE', "%{$filter_text}%"), TExpression::OR_OPERATOR);
-                $sub_criteria->add(new TFilter('tags', 'LIKE', "%{$filter_text}%"), TExpression::OR_OPERATOR);
-                $criteria->add($sub_criteria);
+                $sub = new TCriteria;
+                $sub->add(new TFilter('titulo',    'LIKE', "%{$param['titulo']}%"), TExpression::OR_OPERATOR);
+                $sub->add(new TFilter('subtitulo', 'LIKE', "%{$param['titulo']}%"), TExpression::OR_OPERATOR);
+                $sub->add(new TFilter('tags',      'LIKE', "%{$param['titulo']}%"), TExpression::OR_OPERATOR);
+
+                $criteria->add($sub);
             }
 
-            // Configurações de exibição
-            $criteria->setProperty('limit', $limit);
-            $criteria->setProperty('offset', $param['offset'] ?? 0);
-            $criteria->setProperty('order', $param['order'] ?? 'data_postagem');
-            $criteria->setProperty('direction', $param['direction'] ?? 'desc');
+            /* =========================
+         * 3. Paginação e ordenação
+         * ========================= */
+            $offset    = $param['offset']    ?? 0;
+            $order     = $param['order']     ?? 'data_postagem';
+            $direction = $param['direction'] ?? 'desc';
 
+            $criteria->setProperty('limit', $limit);
+            $criteria->setProperty('offset', $offset);
+            $criteria->setProperty('order', $order);
+            $criteria->setProperty('direction', $direction);
+
+            /* =========================
+         * 4. Carrega registros
+         * ========================= */
             $objects = $repository->load($criteria, FALSE);
 
             $this->datagrid->clear();
+
             if ($objects) {
                 foreach ($objects as $object) {
                     $this->datagrid->addItem($object);
                 }
             }
 
-            // Atualiza a navegação passando o id_tipo de volta nos parâmetros
-            $this->pageNavigation->setCount($repository->count($criteria));
-            $this->pageNavigation->setLimit($limit);
+            /* =========================
+         * 5. Contagem (SEM paginação)
+         * ========================= */
+            $criteriaCount = clone $criteria;
+            $criteriaCount->resetProperties(); // remove limit, offset, order...
 
-            // Importante: fundir os parâmetros atuais para manter o id_tipo nos links de página
+            $count = $repository->count($criteriaCount);
+
+            $this->pageNavigation->setCount($count);
+            $this->pageNavigation->setLimit($limit);
             $this->pageNavigation->setProperties($param);
-            // $this->pageNavigation->setParameter('id_tipo', $tipo);
 
             TTransaction::close();
         } catch (Exception $e) {
-            new TMessage('error', $e->getMessage());
             TTransaction::rollback();
+            new TMessage('error', $e->getMessage());
         }
     }
 }
