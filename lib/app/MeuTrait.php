@@ -253,7 +253,15 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
 
             $current_datetime = date('Ymd_His');
 
-            $file = 'app/output/export_' . $current_datetime . '.pdf';
+            //Caso $GerandoPDF->passagem tenha caracteres inválidos para nome de arquivo, substitui por "." mantendo apenas letras, números, hífens, espaços e sublinhados
+            $safe_passagem = preg_replace('/[^a-zA-Z0-9\s\-_]/', '.', $GerandoPDF->passagem);
+            $safe_titulo = preg_replace('/[^a-zA-Z0-9\s\-_]/', '.', $GerandoPDF->titulo);
+            // Se o título for muito longo, limita a 50 caracteres
+            if (strlen($safe_titulo) > 50) {
+                $safe_titulo = substr($safe_titulo, 0, 50);
+            }
+
+            $file = 'app/output/' . $safe_passagem . ' - ' . $safe_titulo . '.pdf';
 
             // gravar e abrir arquivo
             file_put_contents($file, $dompdf->output());

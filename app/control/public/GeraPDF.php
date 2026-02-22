@@ -60,7 +60,7 @@ class GeraPDF extends TWindow
             }
 
             $current_datetime = date('Y-m-d_H-i-s');
-            $file = 'app/output/export_' . $current_datetime . '.pdf';
+            $file = 'app/output/' . $GerandoPDF->passagem . ' - ' . $GerandoPDF->titulo . '.pdf';
 
             // Gravar e abrir arquivo
             file_put_contents($file, $dompdf->output());
