@@ -253,63 +253,38 @@ class ListaSermoes extends TStandardList
             TTransaction::open('sample');
 
             $repository = new TRepository('Postagens');
-            $limit      = 7;
-            $criteria   = new TCriteria;
+            $limit = 7;
 
-            $param = (array) $param;
+            $criteria = new TCriteria;
 
             /* =========================
-         * 1. Controle do id_tipo
+         * Controle do filtro TIPO
          * ========================= */
             if (isset($param['id_tipo'])) {
-                $tipo = $param['id_tipo'];
-                TSession::setValue(__CLASS__ . '_id_tipo', $tipo);
-            } else {
-                $tipo = TSession::getValue(__CLASS__ . '_id_tipo');
+                TSession::setValue(__CLASS__ . '_id_tipo', $param['id_tipo']);
             }
 
-            if (!empty($tipo)) {
-                $criteria->add(new TFilter('id_tipo', '=', $tipo));
-                $param['id_tipo'] = $tipo; // garante persistência na navegação
-            }
+            $id_tipo = TSession::getValue(__CLASS__ . '_id_tipo');
 
-            /* =========================
-         * 2. Filtros de pesquisa
-         * ========================= */
-            if (!empty($param['passagem'])) {
-                $criteria->add(new TFilter('passagem', 'LIKE', "%{$param['passagem']}%"));
-            }
-
-            if (!empty($param['data_postagem'])) {
-                $data = TDate::date2us($param['data_postagem']);
-                $criteria->add(new TFilter('data_postagem', '=', $data));
-            }
-
-            if (!empty($param['titulo'])) {
-                $sub = new TCriteria;
-                $sub->add(new TFilter('titulo',    'LIKE', "%{$param['titulo']}%"), TExpression::OR_OPERATOR);
-                $sub->add(new TFilter('subtitulo', 'LIKE', "%{$param['titulo']}%"), TExpression::OR_OPERATOR);
-                $sub->add(new TFilter('tags',      'LIKE', "%{$param['titulo']}%"), TExpression::OR_OPERATOR);
-
-                $criteria->add($sub);
+            if ($id_tipo) {
+                $criteria->add(new TFilter('id_tipo', '=', $id_tipo));
             }
 
             /* =========================
-         * 3. Paginação e ordenação
+         * Paginação e ordenação padrão
          * ========================= */
-            $offset    = $param['offset']    ?? 0;
-            $order     = $param['order']     ?? 'data_postagem';
-            $direction = $param['direction'] ?? 'desc';
-
+            $criteria->setProperties($param);
             $criteria->setProperty('limit', $limit);
-            $criteria->setProperty('offset', $offset);
-            $criteria->setProperty('order', $order);
-            $criteria->setProperty('direction', $direction);
+
+            if (empty($criteria->getProperty('order'))) {
+                $criteria->setProperty('order', $this->order);
+                $criteria->setProperty('direction', $this->direction);
+            }
 
             /* =========================
-         * 4. Carrega registros
+         * Carrega registros
          * ========================= */
-            $objects = $repository->load($criteria, FALSE);
+            $objects = $repository->load($criteria);
 
             $this->datagrid->clear();
 
@@ -320,21 +295,27 @@ class ListaSermoes extends TStandardList
             }
 
             /* =========================
-         * 5. Contagem (SEM paginação)
+         * Total de registros (sem paginação)
          * ========================= */
-            $criteriaCount = clone $criteria;
-            $criteriaCount->resetProperties(); // remove limit, offset, order...
+            $criteria->resetProperties();
 
-            $count = $repository->count($criteriaCount);
+            if ($id_tipo) {
+                $criteria->add(new TFilter('id_tipo', '=', $id_tipo));
+            }
 
+            $count = $repository->count($criteria);
+
+            /* =========================
+         * Configura navegação
+         * ========================= */
             $this->pageNavigation->setCount($count);
-            $this->pageNavigation->setLimit($limit);
             $this->pageNavigation->setProperties($param);
+            $this->pageNavigation->setLimit($limit);
 
             TTransaction::close();
         } catch (Exception $e) {
-            TTransaction::rollback();
             new TMessage('error', $e->getMessage());
+            TTransaction::rollback();
         }
     }
 }
