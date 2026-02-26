@@ -126,7 +126,7 @@ class ListaSermoes extends TStandardList
 
         $estilo_btn = 'color: black; width: 100px;';
         //Cria os botões do formulário
-        $btn = $this->form->addAction('Pesquisar', new TAction([$this, 'onReload'], ['id_tipo' => $tipo]), 'fa:search black');
+        $btn = $this->form->addAction('Pesquisar', new TAction([$this, 'onSearch'], ['id_tipo' => $tipo]), 'fa:search black');
         $btn->class = 'btn btn-sm btn-primary';
         $btn->setLabel('Pesquisar');
         $btn->style = $estilo_btn;
@@ -256,6 +256,7 @@ class ListaSermoes extends TStandardList
             $limit = 7;
 
             $criteria = new TCriteria;
+            $data = TSession::getValue(__CLASS__ . '_search_data');
 
             /* =========================
          * Controle do filtro TIPO
@@ -268,6 +269,28 @@ class ListaSermoes extends TStandardList
 
             if ($id_tipo) {
                 $criteria->add(new TFilter('id_tipo', '=', $id_tipo));
+            }
+
+            if ($data) {
+                // --- AGRUPAMENTO OR PARA TÍTULO ---
+                if (!empty($data->titulo)) {
+                    $criteria_or = new TCriteria;
+                    $criteria_or->add(new TFilter('titulo', 'like', "%{$data->titulo}%"));
+                    $criteria_or->add(new TFilter('subtitulo', 'like', "%{$data->titulo}%"), TExpression::OR_OPERATOR);
+                    $criteria_or->add(new TFilter('tags', 'like', "%{$data->titulo}%"), TExpression::OR_OPERATOR);
+
+                    $criteria->add($criteria_or);
+                }
+
+                // --- PASSAGEM ---
+                if (!empty($data->passagem)) {
+                    $criteria->add(new TFilter('passagem', 'like', "%{$data->passagem}%"));
+                }
+
+                // --- DATA_POSTAGEM ---
+                if (!empty($data->data_postagem)) {
+                    $criteria->add(new TFilter('data_postagem', '=', $data->data_postagem));
+                }
             }
 
             /* =========================
@@ -317,5 +340,22 @@ class ListaSermoes extends TStandardList
             new TMessage('error', $e->getMessage());
             TTransaction::rollback();
         }
+    }
+
+    public function onSearch($param = null)
+    {
+        $data = $this->form->getData();
+        $this->form->setData($data);
+
+        TSession::setValue(__CLASS__ . '_search_data', $data);
+
+        $this->onReload($param);
+    }
+
+    public function onLimpa($param = null)
+    {
+        $this->form->clear();
+        TSession::setValue(__CLASS__ . '_search_data', null);
+        $this->onReload($param);
     }
 }
