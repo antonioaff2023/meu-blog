@@ -100,7 +100,6 @@ class FormMeusPosts extends TPage
                     $id_tipo->setValue(0);
                     break;
             }
-
         }
 
 
@@ -158,8 +157,8 @@ class FormMeusPosts extends TPage
 
         // Insere os campos no formulário com setFields
         $this->form->setFields([
-             $titulo,
-             $id_serie,
+            $titulo,
+            $id_serie,
             $subtitulo,
             $datapostagem,
             $passagem,
@@ -277,11 +276,16 @@ class FormMeusPosts extends TPage
         $btn2->class = 'btn btn-sm btn-danger';
         $btn2->style = $tamanho_botao;
 
-                //Cria o botão de novo
+        //Cria o botão de novo
         $btn = $this->form->addAction('Novo', new TAction(['FormMeusPosts', 'onEdit'], ['tipo' => $tipo]), 'fa:plus black');
         $btn->class = 'btn btn-sm btn-info';
         $btn->setLabel('Novo');
         $btn->style = $tamanho_botao;
+
+        //Cria um botão para exibir o pdf
+        $btn_pdf = $this->form->addAction('PDF', new TAction([$this, 'onPdf'], ['tipo' => $tipo]), 'fa:file-pdf black');
+        $btn_pdf->class = 'btn btn-sm btn-secondary';
+        $btn_pdf->style = $tamanho_botao;
 
 
         //Insere campos da coluna esquerda
@@ -459,5 +463,12 @@ class FormMeusPosts extends TPage
             // undo all pending operations
             TTransaction::rollback();
         }
+    }
+
+    function onPdf($param)
+    {
+        //Gerar PDF com os dados do formulário
+        $this->form->setData($this->form->getData());
+        $this->onGeraPDF($param);
     }
 }
