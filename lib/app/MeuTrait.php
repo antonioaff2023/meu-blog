@@ -261,7 +261,14 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
                 $safe_titulo = substr($safe_titulo, 0, 50);
             }
 
+
             $file = 'app/output/' . $safe_passagem . ' - ' . $safe_titulo . '.pdf';
+
+            // Exclui arquivo se já existir com o mesmo nome
+            if (file_exists($file)) {
+                unlink($file);
+            }
+
 
             // gravar e abrir arquivo
             file_put_contents($file, $dompdf->output());
@@ -292,7 +299,7 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
         return $mostra;
     }
 
-        //Limpa o formulário
+    //Limpa o formulário
     public function onLimpa($param)
     {
         $this->form->clear();
