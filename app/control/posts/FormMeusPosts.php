@@ -124,6 +124,8 @@ class FormMeusPosts extends TPage
         $conteudo = new THtmlEditor('conteudo');
         $conteudo->setSize('100%', 500);
 
+        $resumo = new THtmlEditor('resumo');
+        $resumo->setSize('100%', 500);
 
         $tag = new TText('tags');
         $tag->setSize('100%', 100);
@@ -154,6 +156,10 @@ class FormMeusPosts extends TPage
         $id_lbl = new TLabel('ID');
         $id_lbl->setProperty('style', 'display: none;');
         $id->setProperty('style', 'display: none;');
+        
+        
+        
+
 
         // Insere os campos no formulário com setFields
         $this->form->setFields([
@@ -294,6 +300,8 @@ class FormMeusPosts extends TPage
             $dv_esquerda->add($dv_linha[$i]);
         }
 
+
+        //Inserir campos da coluna direita usando Notebook do Bootstrap
 
 
         $dv_direita->add($conteudo_lbl);
