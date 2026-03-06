@@ -212,7 +212,7 @@ class ListaSermoes extends TStandardList
         $col_data_postagem->setAction($order_data_postagem);
 
         //Cria as ações do data grid
-        $action1 = new TDataGridAction(['FormMeusPosts', 'onEdit'],   ['id' => '{id}']);
+        $action1 = new TDataGridAction(['FormMeusPosts', 'onEdit'],   ['id' => '{id}', 'tipo' => $tipo]);
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id' => '{id}']);
         $action3 = new TDataGridAction([$this, 'onGeraPDF'],   ['id' => '{id}']);
 
