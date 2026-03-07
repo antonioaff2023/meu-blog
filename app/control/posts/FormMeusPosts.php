@@ -176,6 +176,7 @@ class FormMeusPosts extends TPage
             $id_subtipo,
             $conteudo,
             $tag,
+            $resumo,
             $btn_tema,
             $btn_serie
         ]);
@@ -276,7 +277,7 @@ class FormMeusPosts extends TPage
 
         //Insere botões no formulário
         $tamanho_botao = "width: 25mm;";
-        $btn = $this->form->addAction(_t('Save'),  new TAction([$this, 'onSalva']),  'fa:save white');
+        $btn = $this->form->addAction(_t('Save'),  new TAction([$this, 'onSalva'], ['tipo' => $tipo]),  'fa:save white');
         $btn->class = 'btn btn-sm btn-success';
         $btn->style = $tamanho_botao;
 

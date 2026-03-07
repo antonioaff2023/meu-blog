@@ -87,7 +87,7 @@
         <menu>
             <menuitem label='Postagem'>
                 <icon>fa:file-export</icon>
-                <action>FormMeusPosts</action>
+                <action>FormMeusPosts#tipo=null</action>
             </menuitem>
             <menuitem label='Devocionais'>
                 <icon>fa:book-open-reader</icon>

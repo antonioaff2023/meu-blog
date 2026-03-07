@@ -24,6 +24,9 @@ class Postagens extends TRecord
         parent::addAttribute('data_postagem');
         parent::addAttribute('conteudo');
         parent::addAttribute('tags');
+        parent::addAttribute('resumo');
+        parent::addAttribute('publica_resumo');
+        parent::addAttribute('publica_postagem');
     }
 
         public function get_tipo()
