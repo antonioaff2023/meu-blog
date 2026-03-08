@@ -274,7 +274,9 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
             file_put_contents($file, $dompdf->output());
 
 
-            $mostra = $this->retornaModal($file);
+            $file_url = $file . '?v=' . time();
+
+            $mostra = $this->retornaModal($file_url);
 
             $container = new TVBox;
             $container->style = 'width: 100%';
