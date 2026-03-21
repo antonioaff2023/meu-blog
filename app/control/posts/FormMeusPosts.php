@@ -298,14 +298,29 @@ class FormMeusPosts extends TPage
         $btn_pdf->class = 'btn btn-sm btn-secondary';
         $btn_pdf->style = $tamanho_botao;
 
-        $btn_sermao = $this->form->addAction(
-            'Gerar Sermão',
-            new TAction([$this, 'onGerarSermao']),
-            'fa:magic orange'
-        );
-        $btn_sermao->class = 'btn btn-sm btn-warning';
-        $btn_sermao->style = $tamanho_botao;
+        // Mostre o botão de gerar somente se o $id for nulo (ou seja, somente para novos registros)
+        if (!isset($param['id']) || $param['id'] === null || $param['id'] === '') {
+            $btn_sermao = $this->form->addAction(
+                'Gera IA',
+                new TAction([$this, 'onGerarSermao']),
+                'fa:magic orange'
+            );
+            $btn_sermao->class = 'btn btn-sm btn-warning';
+            $btn_sermao->style = $tamanho_botao;
+        }
 
+        // Cria um botão para preencher o resumo com o conteúdo do editor, para facilitar a criação de resumos manuais
+        // Este botão só deve aparecer se o tipo for diferente de 4 (devociona, que não tem campo resumo)
+        $tipo_param = $param['tipo'] ?? null;
+        if ($tipo_param != 4) {
+            $btn_preencher_resumo = $this->form->addAction(
+                'Resumo',
+                new TAction([$this, 'onPreencherResumo']),
+                'fa:copy blue'
+            );
+            $btn_preencher_resumo->class = 'btn btn-sm btn-primary';
+            $btn_preencher_resumo->style = $tamanho_botao;
+        }
 
         //Insere campos da coluna esquerda
 
@@ -569,6 +584,56 @@ class FormMeusPosts extends TPage
     }
 
 
+    public function onPreencherResumo($param)
+    {
+        try {
+            // opcional: aumentar limite de tempo só para esta ação
+            set_time_limit(120);
+
+            // pega dados atuais do formulário
+            $data = $this->form->getData();
+
+            $conteudo = trim($data->conteudo ?? '');
+            $titulo = trim($data->titulo ?? '');
+            if ($conteudo === '') {
+                throw new Exception('Preencha o campo Conteúdo antes de gerar o resumo.');
+            }
+
+            if ($titulo !== '') {
+                $conteudo = "TÍTULO: {$titulo}\n\n" . $conteudo;
+            }
+            else {
+                 throw new Exception('O campo Título é necessário para gerar um resumo mais preciso. Por favor, preencha o título e tente novamente.');
+            }
+
+            // lê o arquivo de prompt para resumos
+            $caminho_md = 'app/resources/app/resumos.md';
+            if (!is_readable($caminho_md)) {
+                throw new Exception('Arquivo de prompt de resumo não encontrado: ' . $caminho_md);
+            }
+
+            $prompt_md = file_get_contents($caminho_md);
+
+            // monta o prompt a ser enviado à IA
+            $prompt = $prompt_md . "\n\n"
+                . "----- TEXTO A SER RESUMIDO -----\n"
+                . $conteudo . "\n"
+                . "----- FIM DO TEXTO -----\n";
+
+            // chama a IA usando o helper já existente
+            $resumo_gerado = $this->chamarPerplexity($prompt);
+
+            // preenche o campo resumo e devolve ao formulário
+            $data->resumo = $resumo_gerado;
+            $this->form->setData($data);
+
+            new TMessage('info', 'Resumo gerado com sucesso. Revise antes de salvar.');
+        } catch (Exception $e) {
+            // mantém dados atuais do form
+            $this->form->setData($this->form->getData());
+            new TMessage('error', $e->getMessage());
+        }
+    }
 
 
 
@@ -638,7 +703,4 @@ class FormMeusPosts extends TPage
         $this->form->setData($this->form->getData());
         $this->onGeraPDF($param);
     }
-
-
-
 }

@@ -100,7 +100,6 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
 
 A devocional pode ser produzida diretamente em HTML seguindo exatamente a seguinte estrutura, preenchendo os campos com o conteúdo produzido:
 
-```html
 <div class="tudo" style="text-align: justify">
   <h1 style="font-weight: bolder; text-transform: uppercase">TÍTULO DA DEVOCIONAL</h1>
 
