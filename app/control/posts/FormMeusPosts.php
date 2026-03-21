@@ -52,7 +52,8 @@ class FormMeusPosts extends TPage
         $titulo = new TEntry('titulo');
 
         if (!empty($param['id_tipo'])) {
-            $tipo = $param['id_tipo'];
+            $tipo = $param['tipo'] ?? 1; // default 1
+
         } else {
             $tipo = 1;
         }
@@ -297,6 +298,14 @@ class FormMeusPosts extends TPage
         $btn_pdf->class = 'btn btn-sm btn-secondary';
         $btn_pdf->style = $tamanho_botao;
 
+        $btn_sermao = $this->form->addAction(
+            'Gerar Sermão',
+            new TAction([$this, 'onGerarSermao']),
+            'fa:magic orange'
+        );
+        $btn_sermao->class = 'btn btn-sm btn-warning';
+        $btn_sermao->style = $tamanho_botao;
+
 
         //Insere campos da coluna esquerda
 
@@ -307,9 +316,10 @@ class FormMeusPosts extends TPage
 
         //Inserir campos da coluna direita usando Notebook do Bootstrap
         $notebook = new BootstrapNotebookWrapper(new TNotebook(400, 230), 'bordered');
-        
+
         $page1 = $notebook->appendPage('Conteúdo', $conteudo);
-        if ($param['tipo'] != 4) {
+        $tipo_param = $param['tipo'] ?? null;
+        if ($tipo_param != 4) {
             $page2 = $notebook->appendPage('Resumo', $resumo);
         }
 
@@ -421,6 +431,147 @@ class FormMeusPosts extends TPage
         }
     }
 
+    public function onGerarSermao($param)
+    {
+        try {
+            $data = $this->form->getData(); // stdClass com campos do form
+            set_time_limit(120);
+            $titulo      = trim($data->titulo ?? '');
+            $passagem    = trim($data->passagem ?? '');
+            $id_tipo     = $data->id_tipo ?? null;
+            $id_subtipo  = $data->id_subtipo ?? null;
+
+            // Regra 1: se ambos vazios, exigir preenchimento
+            if ($titulo === '' && $passagem === '') {
+                throw new Exception('Preencha pelo menos Título ou Passagem para gerar o conteúdo.');
+            }
+
+            // Descobrir descrição do tipo (ex.: Sermão, Estudo bíblico, Devocional...)
+            $tipo_descricao = '';
+            if ($id_tipo) {
+                TTransaction::open('sample');
+                $tipo = new TipoConteudo($id_tipo);
+                $tipo_descricao = $tipo->descricao;
+                TTransaction::close();
+            }
+
+            // Descobrir descrição do subtipo (ex.: Expositivo, Temático, Biográfico...)
+            $subtipo_descricao = '';
+            if ($id_subtipo) {
+                TTransaction::open('sample');
+                $subtipo = new SubTipoConteudo($id_subtipo);
+                $subtipo_descricao = $subtipo->descricao;
+                TTransaction::close();
+            }
+
+            // Escolher arquivo de recurso conforme Tipo/Subtipo
+            $resource_file = null;
+
+            if (
+                mb_stripos($tipo_descricao, 'estudo bíblico') !== false
+                || mb_stripos($tipo_descricao, 'estudo biblico') !== false
+                || mb_stripos($tipo_descricao, 'estudo') !== false
+            ) {
+
+                $resource_file = 'app/resources/app/cria_estudos_biblicos.md';
+            } elseif (mb_stripos($tipo_descricao, 'devocional') !== false) {
+
+                $resource_file = 'app/resources/app/devocional.md';
+            } elseif (
+                mb_stripos($tipo_descricao, 'sermão') !== false
+                || mb_stripos($tipo_descricao, 'sermao') !== false
+            ) {
+
+                // Sermão expositivo ou textual
+                if (
+                    mb_stripos($subtipo_descricao, 'expositivo') !== false
+                    || mb_stripos($subtipo_descricao, 'textual') !== false
+                ) {
+
+                    $resource_file = 'app/resources/app/sermao_expositivo.md';
+
+                    // Sermão temático
+                } elseif (
+                    mb_stripos($subtipo_descricao, 'temático') !== false
+                    || mb_stripos($subtipo_descricao, 'tematico') !== false
+                ) {
+
+                    $resource_file = 'app/resources/app/sermao_tematico.md';
+
+                    // Sermão biográfico
+                } elseif (
+                    mb_stripos($subtipo_descricao, 'biográfico') !== false
+                    || mb_stripos($subtipo_descricao, 'biografico') !== false
+                ) {
+
+                    $resource_file = 'app/resources/app/sermao_biografico.md';
+                }
+            }
+
+            if (!$resource_file) {
+                throw new Exception('Tipo/Subtipo não reconhecido para seleção do modelo de prompt.');
+            }
+
+            // Carregar conteúdo do arquivo de recurso (prompt/base)
+            if (!file_exists($resource_file)) {
+                throw new Exception("Arquivo de recurso não encontrado: {$resource_file}");
+            }
+            $prompt_base = file_get_contents($resource_file);
+
+            // Se título vazio e passagem preenchida: IA deve propor título
+            if ($titulo === '' && $passagem !== '') {
+                $prompt_titulo = "A partir da passagem bíblica abreviada: {$passagem}, proponha um título adequado e fiel à teologia reformada para um conteúdo cristocêntrico. Devolva apenas o título.";
+                $novo_titulo = $this->chamarPerplexity($prompt_titulo);
+                $data->titulo = trim($novo_titulo);
+                $titulo = $data->titulo;
+            }
+
+            // Se passagem vazia e título preenchido: IA deve propor passagem
+            if ($passagem === '' && $titulo !== '') {
+                $prompt_passagem = "A partir do título: \"{$titulo}\", sugira uma passagem bíblica adequada, no formato abreviado dos livros bíblicos (por exemplo: Jo 3.16; Rm 8.28; Sl 23.1-6). Devolva apenas a referência.";
+                $nova_passagem = $this->chamarPerplexity($prompt_passagem);
+                $data->passagem = trim($nova_passagem);
+                $passagem = $data->passagem;
+            }
+
+            // Instrução geral de tradição
+            $instrucao_tipo  = "Considere a tradição reformada, cristocêntrica, com ênfase em fidelidade ao texto bíblico.\n\n";
+
+            // Montar prompt principal usando o arquivo base + contexto
+            $prompt_conteudo  = $prompt_base . "\n\n";
+            $prompt_conteudo .= $instrucao_tipo;
+
+            if ($tipo_descricao !== '') {
+                $prompt_conteudo .= "Tipo de conteúdo: {$tipo_descricao}\n";
+            }
+            if ($subtipo_descricao !== '') {
+                $prompt_conteudo .= "Subtipo: {$subtipo_descricao}\n";
+            }
+            if ($titulo !== '') {
+                $prompt_conteudo .= "Título: {$titulo}\n";
+            }
+            if ($passagem !== '') {
+                $prompt_conteudo .= "Passagem bíblica (abreviada): {$passagem}\n";
+            }
+
+            // Chamar IA com o prompt completo
+            $conteudo_gerado = $this->chamarPerplexity($prompt_conteudo);
+
+            // Preenche o campo conteúdo e devolve dados ao formulário
+            $data->conteudo = $conteudo_gerado;
+            $this->form->setData($data);
+
+            new TMessage('info', 'Conteúdo gerado. Revise o texto antes de salvar.');
+        } catch (Exception $e) {
+            $this->form->setData($this->form->getData());
+            new TMessage('error', $e->getMessage());
+        }
+    }
+
+
+
+
+
     /**
      * method onSave()
      * Executed whenever the user clicks at the save button
@@ -486,5 +637,67 @@ class FormMeusPosts extends TPage
         //Gerar PDF com os dados do formulário
         $this->form->setData($this->form->getData());
         $this->onGeraPDF($param);
+    }
+
+
+    private function chamarPerplexity(string $prompt): string
+    {
+        $apiKey = getenv('PERPLEXITY_API_KEY'); // ideal: pegar de config/env
+
+        $payload = [
+            'model' => 'sonar-pro',
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => 'Você é um assistente para elaboração de sermões e estudos bíblicos reformados, pré-milenistas, pós-tribulacionistas, com fidelidade exegética.'
+                ],
+                [
+                    'role' => 'user',
+                    'content' => $prompt,
+                ],
+            ],
+        ];
+
+        $ch = curl_init('https://api.perplexity.ai/chat/completions');
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $apiKey,
+            ],
+            CURLOPT_POSTFIELDS => json_encode($payload),
+        ]);
+
+        $res = curl_exec($ch);
+        if ($res === false) {
+            $err = curl_error($ch);
+            unset($ch);
+            throw new Exception('Erro na requisição à IA: ' . $err);
+        }
+
+        unset($ch);
+
+        $json = json_decode($res, true);
+
+        // Se veio erro estruturado da API
+        if (isset($json['error'])) {
+            $msg = $json['error']['message'] ?? json_encode($json['error']);
+            throw new Exception('Erro da API da IA: ' . $msg);
+        }
+
+        // Tenta formato OpenAI-compatível (choices[0].message.content)
+        if (isset($json['choices'][0]['message']['content'])) {
+            return trim($json['choices'][0]['message']['content']);
+        }
+
+        // Tenta formato alternativo output[0].content[0].text (se em algum momento a API usar isso)
+        if (isset($json['output'][0]['content'][0]['text'])) {
+            return trim($json['output'][0]['content'][0]['text']);
+        }
+
+        // Último recurso: dump parcial pro log e mensagem genérica
+        file_put_contents(__DIR__ . '/log_perplexity_erro.json', $res . PHP_EOL, FILE_APPEND);
+        throw new Exception('Resposta inesperada da IA. Verifique o log_perplexity_erro.json para detalhes.');
     }
 }
