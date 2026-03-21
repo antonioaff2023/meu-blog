@@ -109,12 +109,12 @@ Depois de escrever o sermão em texto corrido, gere **também** o HTML seguindo 
   <h2 style="font-weight: bold;">Desenvolvimento</h2>
   <p>TEXTO DO DESENVOLVIMENTO</p>
 
-  <h2 style="font-weight: bold;">Aplicações</h2>
+  <h2 style="font-weight: bold;">Aplicações</h2> <!-- Cada ponto das aplicações deve ser numerada com algarismos romanos minúsculos seguido de ')'-->
 
-  <h3 style="font-style: italic">TÍTULO DA APLICAÇÃO 1</h3>
+  <h3 style="font-style: italic">i) TÍTULO DA APLICAÇÃO 1</h3>
   <p>TEXTO DA APLICAÇÃO 1</p>
 
-  <h3 style="font-style: italic">TÍTULO DA APLICAÇÃO 2</h3>
+  <h3 style="font-style: italic">ii) TÍTULO DA APLICAÇÃO 2</h3>
   <p>TEXTO DA APLICAÇÃO 2</p>
 
   <!-- Repita o padrão até a aplicação 6, se houver -->

@@ -111,12 +111,12 @@ A devocional pode ser produzida diretamente em HTML seguindo exatamente a seguin
   <h2 style="font-weight: bold;">Desenvolvimento</h2>
   <p>TEXTO DO DESENVOLVIMENTO</p>
 
-  <h2 style="font-weight: bold;">Aplicações</h2>
+  <h2 style="font-weight: bold;">Aplicações</h2> <!-- Cada ponto das aplicações deve ser numerada com algarismos romanos minúsculos seguido de ')'-->
 
-  <h3 style="font-style: italic">Ponto 1</h3>
+  <h3 style="font-style: italic">i) Ponto 1</h3>
   <p>TEXTO DO PONTO 1</p>
 
-  <h3 style="font-style: italic">Ponto 2</h3>
+  <h3 style="font-style: italic">ii) Ponto 2</h3>
   <p>TEXTO DO PONTO 2</p>
 
   <!-- Repita o padrão para os demais pontos, até o ponto 6, se houver -->
