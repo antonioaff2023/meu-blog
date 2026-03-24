@@ -212,8 +212,7 @@ Texto base: (referência – NAA)
    - (até 6 perguntas)
    ```
 
-## 12. Formato de saída em HTML
-Gere um arquivo html seguindo o modelo abaixo:
+## 12. Modelo HTML
 
 
 <div class="sermon-block">

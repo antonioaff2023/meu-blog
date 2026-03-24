@@ -101,12 +101,8 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
 - Termine com um tom pastoral e convidativo, adequado para um apelo em um culto cristão.
 - A conclusão deve ter entre 250 a 350 palavras.
 
-## Formato de saída em HTML
-
-O texto pode ser produzido diretamente em HTML seguindo exatamente a seguinte estrutura, preenchendo os campos com o conteúdo produzido:
-
-```html
-<div class="tudo" style="text-align: justify">
+## Modelo html
+<div class="sermon-block" style="text-align: justify">
   <h1 style="font-weight: bolder; text-transform: uppercase">TÍTULO DO SERMÃO</h1>
 
   <h2 style="font-weight: bold;">Personagem Bíblico (Ex.: A vida de José no Egito)</h2>

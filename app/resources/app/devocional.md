@@ -96,11 +96,9 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
 - Termine com um tom pastoral, consolador e convidativo, adequado à vida devocional pessoal ou familiar.
 - Use até 150 palavras.
 
-## Formato de saída em HTML
+## Modelo html
 
-A devocional pode ser produzida diretamente em HTML seguindo exatamente a seguinte estrutura, preenchendo os campos com o conteúdo produzido:
-
-<div class="tudo" style="text-align: justify">
+<div class="sermon-block" style="text-align: justify">
   <h1 style="font-weight: bolder; text-transform: uppercase">TÍTULO DA DEVOCIONAL</h1>
 
   <h2 style="font-weight: bold;">Referência Bíblica (Ex.: João 3.1-16)</h2> 

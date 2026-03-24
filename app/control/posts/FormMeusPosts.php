@@ -568,12 +568,15 @@ class FormMeusPosts extends TPage
             if ($passagem !== '') {
                 $prompt_conteudo .= "Passagem bíblica (abreviada): {$passagem}\n";
             }
-
             // Chamar IA com o prompt completo
             $conteudo_gerado = $this->chamarPerplexity($prompt_conteudo);
 
-            // Preenche o campo conteúdo e devolve dados ao formulário
-            $data->conteudo = $conteudo_gerado;
+            // Extrair apenas o bloco <div class="sermon-block">...</div>
+            $somente_sermon_block = $this->extrairSermonBlock($conteudo_gerado);
+
+            // Se encontrou o bloco, usa ele; senão, mantém o conteúdo inteiro (ou trate como erro)
+            $data->conteudo = $somente_sermon_block ?? $conteudo_gerado;
+
             $this->form->setData($data);
 
             new TMessage('info', 'Conteúdo gerado. Revise o texto antes de salvar.');
@@ -601,9 +604,8 @@ class FormMeusPosts extends TPage
 
             if ($titulo !== '') {
                 $conteudo = "TÍTULO: {$titulo}\n\n" . $conteudo;
-            }
-            else {
-                 throw new Exception('O campo Título é necessário para gerar um resumo mais preciso. Por favor, preencha o título e tente novamente.');
+            } else {
+                throw new Exception('O campo Título é necessário para gerar um resumo mais preciso. Por favor, preencha o título e tente novamente.');
             }
 
             // lê o arquivo de prompt para resumos
@@ -702,5 +704,21 @@ class FormMeusPosts extends TPage
         //Gerar PDF com os dados do formulário
         $this->form->setData($this->form->getData());
         $this->onGeraPDF($param);
+    }
+
+    protected function extrairSermonBlock(?string $html): ?string
+    {
+        if (empty($html)) {
+            return null;
+        }
+
+        $padrao = '/<div\s+class=("|\')sermon-block("|\')(.*?)<\/div>/is';
+
+        if (preg_match($padrao, $html, $matches)) {
+            // $matches[0] contém o <div class="sermon-block"> ... </div> inteiro
+            return $matches[0];
+        }
+
+        return null;
     }
 }

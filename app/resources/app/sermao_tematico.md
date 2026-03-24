@@ -92,12 +92,8 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
   - sua cruz e ressurreição
 - Termine com um tom pastoral e convidativo, adequado para um apelo em um culto cristão.
 
-## Formato de saída em HTML
-
-Depois de escrever o sermão em texto corrido, gere **também** o HTML seguindo exatamente a seguinte estrutura, preenchendo os campos com o conteúdo produzido:
-
-```html
-<div class="tudo" style="text-align: justify">
+## Modelo HTML
+<div class="sermon-block" style="text-align: justify">
   <h1 style="font-weight: bolder; text-transform: uppercase">TÍTULO DO SERMÃO</h1>
 
   <h2 style="font-weight: bold;">Referência Bíblica</h2>
