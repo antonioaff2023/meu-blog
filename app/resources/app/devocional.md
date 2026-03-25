@@ -32,7 +32,7 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
    - Conclusão
 4. Trabalhe em linguagem pastoral, simples e calorosa, adequada à leitura devocional diária, mas com fidelidade bíblica e teológica.
 5. Sempre que citar a Bíblia, utilize a versão NAA (Nova Almeida Atualizada), em forma de referência ou paráfrase breve.
-6. No final, além do texto corrido da devocional, gere também um bloco de HTML seguindo exatamente o modelo informado.
+6. No final, gere também um bloco de HTML seguindo exatamente o modelo informado.
 
 ## Estrutura detalhada da devocional
 
@@ -61,7 +61,7 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
 - Evite discussões técnicas muito longas; traduza conceitos teológicos em linguagem simples e aplicável à vida diária.
 - Use até 200 palavras.
 
-### Aplicações (entre 50 e 100 palavras para cada aplicação)
+### Aplicações (No máximo 70 palavras para cada aplicação)
 
 - Crie entre **3 e 6** aplicações, nunca menos de 3 nem mais de 6.
 - Cada aplicação deve ter:
@@ -75,11 +75,8 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
     - a alegoria
     - ou qualquer relação cristocêntrica presente no texto
   - mostre como o leitor hoje pode responder à verdade bíblica apresentada
-- Cada aplicação deve ter entre 50 a 100 palavras, em frases compactas e diretas.
-- Foque em aplicações para:
-  - mente (crenças e convicções)
-  - coração (afetos, desejos)
-  - vontade (decisões, práticas concretas)
+- Cada aplicação deve ter no máximo 70 palavras, em frases inspirativas e pastorais.
+
 
 ### Conclusão (máx. 150 palavras)
 

@@ -51,12 +51,6 @@ class FormMeusPosts extends TPage
         $id = new THidden('id');
         $titulo = new TEntry('titulo');
 
-        if (!empty($param['id_tipo'])) {
-            $tipo = $param['tipo'] ?? 1; // default 1
-
-        } else {
-            $tipo = 1;
-        }
 
 
         $titulo->style = $fundo_campo;
@@ -85,22 +79,30 @@ class FormMeusPosts extends TPage
         $id_tipo->style = $fundo_campo;
         //Preenche o campo id_tipo conforme o tipo de postagem
 
+        if (!empty($param['id_tipo'])) {
+            $tipo = $param['tipo'] ?? 1; // default 1
+            
+
+        } else {
+            $tipo = 1;
+        }
+
+        $id_tipo->setValue($tipo);
+
         if (isset($param['tipo'])) {
-            //Usa swicth
-            switch ($param['tipo']) {
-                case 3:
-                    $id_tipo->setValue(3);
-                    break;
-                case 2:
-                    $id_tipo->setValue(2);
-                    break;
-                case 1:
-                    $id_tipo->setValue(1);
-                    break;
-                default:
-                    $id_tipo->setValue(0);
-                    break;
-            }
+            $id_tipo->setValue($param['tipo']) ?? null;
+        }
+
+        $this->onChangeTipo(['id_tipo' => $param['tipo'] ?? $tipo]);
+
+        //Retorna a data da última devocional postada para preencher o campo data_postagem
+        TTransaction::open('sample');
+        $ultima_devocional = Postagens::where('id_tipo', '=', 4)->orderBy('data_postagem', 'desc')->first();
+        TTransaction::close();
+        //Soma 1 dia à data da última devocional para sugerir a data da nova postagem
+        if ($ultima_devocional) {
+            $data_sugerida = date('Y-m-d', strtotime($ultima_devocional->data_postagem . ' +1 day'));
+            $datapostagem->setValue(TDate::date2br($data_sugerida));
         }
 
 
@@ -278,7 +280,7 @@ class FormMeusPosts extends TPage
 
         //Insere botões no formulário
         $tamanho_botao = "width: 25mm;";
-        $btn = $this->form->addAction(_t('Save'),  new TAction([$this, 'onSalva'], ['tipo' => $tipo]),  'fa:save white');
+        $btn = $this->form->addAction(_t('Save'),  new TAction([$this, 'onSave'], ['tipo' => $tipo]),  'fa:save white');
         $btn->class = 'btn btn-sm btn-success';
         $btn->style = $tamanho_botao;
 
@@ -367,6 +369,7 @@ class FormMeusPosts extends TPage
     {
         try {
 
+        
             TTransaction::open('sample');
             if (!empty($param['id_tipo'])) {
                 $estado = TipoConteudo::where('id', '=', $param['id_tipo'])->first();
@@ -375,7 +378,7 @@ class FormMeusPosts extends TPage
 
                 TDBCombo::reloadFromModel('form_meus_posts', 'id_subtipo', 'sample', 'SubTipoConteudo', 'id', "descricao", 'id', $criteria, TRUE);
 
-                if ($param['id_tipo'] == 2) {
+                if ($param['id_tipo'] == 2 || $param['id_tipo'] == 4) {
                     // Esconde o container dos campos subtipo
                     TScript::create("document.querySelector('[name=id_subtipo]').closest('div').style.display = 'none';");
                     TScript::create("document.getElementById('id_tipo').style.width = '49.2%';");
@@ -679,7 +682,9 @@ class FormMeusPosts extends TPage
             if (isset($this->useMessages) and $this->useMessages === false) {
                 AdiantiCoreApplication::loadPageURL($this->afterSaveAction->serialize());
             } else {
-                new TMessage('info', AdiantiCoreTranslator::translate('Record saved'), $this->afterSaveAction);
+                TToast::show('success',  'Registro salvo com sucesso', 'bottom center', 'far:check-circle'); // notifica o usuário
+
+                
             }
 
             return $object;
@@ -721,4 +726,6 @@ class FormMeusPosts extends TPage
 
         return null;
     }
+
+
 }
