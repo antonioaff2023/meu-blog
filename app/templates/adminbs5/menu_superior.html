@@ -1,0 +1,62 @@
+<!--[main]-->
+<style>
+    /* Configuração principal da barra de navegação */
+    .navbar {
+        display: flex;
+        justify-content: flex-end;
+        /* ALINHA TUDO À DIREITA */
+        align-items: first baseline;
+        /* 'center' geralmente funciona melhor que 'first baseline' para links */
+
+        background-color: transparent;
+        color: white;
+        height: 70px;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        box-sizing: border-box;
+        /* Garante que o padding não ultrapasse os 100% de largura */
+    }
+
+    /* Configuração dos links */
+    .nav-links {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        margin: 0;
+        /* Remove a margem padrão das listas (ul) */
+        padding: 0;
+        /* text-align: right removido, pois o justify-content já faz o trabalho no Flexbox */
+    }
+
+    .nav-links li {
+        margin: 0 15px;
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-weight: 800;
+    }
+
+    .nav-links a {
+        color: #ecf0f1;
+        text-decoration: none;
+        font-size: 1.75rem;
+        transition: color 0.3s ease;
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-weight: 800;
+    }
+
+    .nav-links a:hover {
+        color: #3498db;
+    }
+</style>
+
+<nav class="navbar">
+    <ul class="nav-links">
+        <li><a href="index.php?class=ListaPublica&method=onEdit&id_tipo=1">Sermões</a></li>
+        <li><a href="#estudos">Estudos Bíblicos</a></li>
+        <li><a href="#teologia">Teologia Sistemática</a></li>
+        <li><a href="https://prantonioaffonso.online/biblias" target="_blank" rel="noopener noreferrer">Bíblias</a></li>
+        <li><a href="index.php?class=LoginForm" class="admin-btn">Administrador</a></li>
+    </ul>
+</nav>
+<!--[/main]-->

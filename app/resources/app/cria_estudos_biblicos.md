@@ -6,7 +6,9 @@ Este documento descreve um **padrão** para elaborar estudos bíblicos expositiv
 
 ## 1. Entrada de dados do estudo
 
-- Texto base obrigatório: referência bíblica (ex.: João 3.16-21).
+- Se for proposto um texto bíblico trabalhe de forma expositiva.
+- Se for proposto um tema ou assunto, sem um texto bíblico, faça uma pesquisa profunda do tema nas escrituras sobre o tema/assunto e crie o estudo.
+- Se for proposto um tema ou assunto, partindo de um texto bíblico, explique o texto na introdução ligando-o ao tema, e pesquise na Bíblia o tema e o assunto buscando outros textos que possam corroborar. 
 - Título:
   - Se o usuário informar um título, usá-lo.
   - Se não informar, gerar um título fiel ao tema principal do texto (ex.: “O Amor que Salva o Mundo” para João 3.16-21).
@@ -44,6 +46,7 @@ Todo estudo seguirá, em linhas gerais, a estrutura abaixo:
 
 A introdução deve:
 
+- Conter entre 250 e 300 palavras em linguagem pastoral mesclada com acadêmica (sempre explicando os termos acadêmicos)
 - Apresentar o contexto bíblico:
   - Contexto imediato: o que acontece nos parágrafos, capítulos anteriores e posteriores ao texto base (resumidamente).
   - Contexto do livro: autor humano, destinatários, ocasião, propósito principal.

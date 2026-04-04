@@ -222,75 +222,25 @@ class FormMeusPosts extends TPage
         // A URL pass a passagem e versão do formulário via query string;
         // o JS do buscador lê os parâmetros e abre já na aba Passagem com a busca disparada.
         // O href é dinâmico: montado via onclick para capturar o valor atual do campo.
-        // Botão para inserir passagem bíblica no conteúdo via API
         $btn_biblia = new TElement('a');
-        $btn_biblia->href    = 'javascript:void(0)';
+        $btn_biblia->href    = '#';
+        $btn_biblia->target  = '_blank';
+        $btn_biblia->rel     = 'noopener noreferrer';
         $btn_biblia->style   = 'display: inline-block; margin-top: 4px; font-size: 11px; color: #5a3e1b; text-decoration: none; background: #f0e4d0; border: 1px solid #c8a87a; border-radius: 4px; padding: 2px 8px; cursor: pointer;';
-
         $btn_biblia->onclick = "
-            var btn = this;
-            var passagemCampo = document.querySelector('[name=passagem]');
-            var passagem = passagemCampo ? passagemCampo.value.trim() : '';
-
-            // 1. Solicita a passagem se o campo estiver vazio
-            if (!passagem) {
-                passagem = prompt('Informe a passagem bíblica (ex: Jo 3.1-21):');
-                if (!passagem) return false; 
-                if (passagemCampo) passagemCampo.value = passagem;
-            }
-
-            var originalText = btn.innerHTML;
-            btn.innerHTML = '⏳ Buscando...';
-            btn.style.pointerEvents = 'none';
-
-            // 2. Chama a API usando ENGINE.PHP para evitar o HTML do template
-            var url = 'engine.php?class=ApiPassagem&method=handle&passagem=' + encodeURIComponent(passagem) + '&versao=NAA';
-
-            fetch(url)
-                .then(response => {
-                    // Verifica se a resposta não é um JSON válido antes de processar
-                    if (!response.ok) {
-                        throw new Error('Erro na resposta do servidor: ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    btn.innerHTML = originalText;
-                    btn.style.pointerEvents = 'auto';
-
-                    if (data.ok) {
-                        var editor = $('[name=\"conteudo\"]');
-                        
-                        if (editor.length) {
-                            var htmlAtual = editor.summernote('code');
-
-                            if (htmlAtual.indexOf('{{passagem}}') !== -1) {
-                                htmlAtual = htmlAtual.replace('{{passagem}}', data.html);
-                            } else {
-                                htmlAtual += '<br>' + data.html;
-                            }
-
-                            editor.summernote('code', htmlAtual);
-                            
-                            if (typeof TToast !== 'undefined') {
-                                TToast.show('success', 'Passagem inserida com sucesso!', 'bottom center', 'far:check-circle');
-                            }
-                        } else {
-                            alert('Editor de conteúdo não encontrado.');
-                        }
-                    } else {
-                        alert('Erro ao buscar passagem: ' + data.error);
-                    }
-                })
-                .catch(error => {
-                    btn.innerHTML = originalText;
-                    btn.style.pointerEvents = 'auto';
-                    alert('Falha na comunicação com a API. Verifique o console ou a aba Network (Rede). Erro: ' + error);
-                });
+            (function(el) {
+                var base    = 'https://prantonioaffonso.online/biblias/';
+                var campo   = document.querySelector('[name=passagem]');
+                var passagem = campo ? campo.value.trim() : '';
+                if (passagem) {
+                    el.href = base + '?passagem=' + encodeURIComponent(passagem) + '&versao=NAA';
+                } else {
+                    el.href = base;
+                }
+            })(this);
             return true;
         ";
-
-        $btn_biblia->add('📖 Inserir Passagem');
+        $btn_biblia->add('📖 Bíblias');
         $dv_passagem->add($btn_biblia);
 
         //Tema

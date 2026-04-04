@@ -11,9 +11,20 @@ $public = in_array($class, !empty($ini['permission']['public_classes']) ? $ini['
 
 // AdiantiCoreApplication::setRouter(array('AdiantiRouteTranslator', 'translate'));
 
+
+
 new TSession;
 ApplicationAuthenticationService::checkMultiSession();
 ApplicationTranslator::setLanguage( TSession::getValue('user_language'), true );
+
+$caminho_menu = 'app/templates/adminbs5/menu_superior.html';
+
+if (file_exists($caminho_menu)) {
+    $menu_html = file_get_contents($caminho_menu);
+} else {
+    $menu_html = '<p>Erro: Menu não encontrado.</p>';
+}
+
 
 
 if ($class == 'LoginForm'  || $class == 'SermoesPublicosView')
@@ -44,10 +55,10 @@ else
         $menu    = AdiantiMenuBuilder::parse('menu-public.xml', $theme);
         $content = str_replace('{MENU}', $menu, $content);
 
-        $menu = new MenuRenderer('menu-top-public.xml', 'MENUTOP');
-        $content = $menu->render($content);
+        // $menu = new MenuRenderer('menu-top-public.xml', 'MENUTOP');
+        // $content = $menu->render($content);
 
-        // $content = str_replace('{MENUTOP}', AdiantiMenuBuilder::parseNavBar('menu-top-public.xml', $theme), $content);
+        $content = str_replace('{MENUTOP}', $menu_html, $content);
         $content = str_replace('{MENUBOTTOM}', AdiantiMenuBuilder::parseNavBar('menu-bottom-public.xml', $theme), $content);
 
 

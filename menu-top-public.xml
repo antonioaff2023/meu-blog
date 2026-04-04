@@ -18,6 +18,12 @@
       <mobile>Y</mobile>
     </menuitem>
     <menuitem>
+      <action>ExternalLink</action>
+      <title>Buscador bíblico</title>
+      <label>Buscador bíblico</label>
+      <mobile>Y</mobile>
+    </menuitem>
+    <menuitem>
       <action>LoginForm</action>
       <title>Administrador</title>
       <label>Administrador</label>

@@ -45,6 +45,7 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
   - político
   - geográfico
 - A introdução deve preparar o ouvinte para entender o fluxo do sermão, sem entrar ainda em explicações detalhadas de cada versículo.
+- A introdução deve ter entre 250 e 300 palavras. Sempre em uma linguagem simples e coloquial, bem popular. 
 
 ### Desenvolvimento
 
@@ -70,13 +71,8 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
     - a alegoria
     - ou qualquer relação cristocêntrica presente no texto
   - mostre como o ouvinte hoje pode responder à verdade bíblica apresentada
-- O parágrafo de cada aplicação deve ter, aproximadamente, de 10 a 15 linhas
-  considerando uma página A4 em formato retrato (um parágrafo robusto,
-  não apenas 2 ou 3 frases).
-- Foque em aplicações para:
-  - mente (crenças e convicções)
-  - coração (afetos, desejos)
-  - vontade (decisões, práticas concretas)
+- O parágrafo de cada aplicação deve ter entre 150 a 250 palavras. 
+
 
 ### Conclusão
 
@@ -91,6 +87,7 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
   - sua obra redentora
   - sua cruz e ressurreição
 - Termine com um tom pastoral e convidativo, adequado para um apelo em um culto cristão.
+- A conclusão deve ter entre 250 e 300 palavras. Sempre em uma linguagem simples e coloquial, bem popular. 
 
 ## Modelo HTML
 <div class="sermon-block" style="text-align: justify">

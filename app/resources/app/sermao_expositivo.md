@@ -30,7 +30,7 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
    - Conclusão
 4. Trabalhe em linguagem pastoral, clara e coloquial, mas com profundidade bíblica e teológica.
 5. Sempre que citar a Bíblia, utilize a versão NAA (Nova Almeida Atualizada), em forma de referência ou paráfrase breve.
-6. No final, além do texto corrido do sermão, gere também um bloco de HTML seguindo exatamente o modelo informado.
+6. No final, gere também um bloco de HTML seguindo exatamente o modelo informado.
 
 ## Estrutura detalhada do sermão
 
@@ -73,11 +73,8 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
     - a alegoria
     - ou qualquer relação cristocêntrica presente no texto
   - mostre como o ouvinte hoje pode responder à verdade bíblica apresentada
-- O cada aplicação deve ter, entre no mínimo 250 palavras e no máximo 350.
-- Foque em aplicações para:
-  - mente (crenças e convicções)
-  - coração (afetos, desejos)
-  - vontade (decisões, práticas concretas)
+- O cada aplicação deve ter, entre no mínimo 200 palavras e no máximo 300.
+
 
 ### Conclusão
 
