@@ -38,7 +38,7 @@ class ListaSermoes extends TStandardList
         parent::setDefaultOrder('data_postagem', 'desc');         // Define a ordem padrão
 
 
-        parent::setLimit(7);                    // Define o limite de registros por página
+        parent::setLimit(4);                    // Define o limite de registros por página
 
 
         //Cria o formulário
@@ -253,7 +253,7 @@ class ListaSermoes extends TStandardList
             TTransaction::open('sample');
 
             $repository = new TRepository('Postagens');
-            $limit = 7;
+            $limit = 4;
 
             $criteria = new TCriteria;
             $data = TSession::getValue(__CLASS__ . '_search_data');

@@ -71,8 +71,6 @@ class FormMeusPosts extends TPage
         $btn_tema->setAction(new TAction(['FormTema', 'onEdit']), '+');
         $btn_tema->style = 'all: unset; margin: 0 auto; color: green; font-size: 20px; font-weight: bold; cursor: pointer;';
 
-
-
         $id_tipo = new TDBCombo('id_tipo', 'sample', 'TipoConteudo', 'id', 'descricao');
         $id_tipo->setChangeAction(new TAction([$this, 'onChangeTipo']));
         $id_tipo->setId('id_tipo');
@@ -126,6 +124,10 @@ class FormMeusPosts extends TPage
         $tag->setSize('100%', 100);
         $tag->style = 'background-color:rgb(192, 188, 188);';
 
+        $btn_tag = new TButton('btn_tag');
+        $btn_tag->style = 'all: unset; margin: 0 auto; color: green; font-size: 20px; font-weight: bold; cursor: pointer;';
+        $btn_tag->setAction(new TAction([$this, 'onAddTag']), '+');
+
         // criação de labels
         $titulo_lbl = new TLabel('Título');
         $subtitulo_lbl = new TLabel('Subtítulo');
@@ -154,8 +156,6 @@ class FormMeusPosts extends TPage
 
 
 
-
-
         // Insere os campos no formulário com setFields
         $this->form->setFields([
             $titulo,
@@ -170,7 +170,8 @@ class FormMeusPosts extends TPage
             $tag,
             $resumo,
             $btn_tema,
-            $btn_serie
+            $btn_serie,
+            $btn_tag
         ]);
         //Cria div's lado a lado 
         $dv_geral = new TElement('div');
@@ -293,6 +294,8 @@ class FormMeusPosts extends TPage
         $btn_biblia->add('📖 Inserir Passagem');
         $dv_passagem->add($btn_biblia);
 
+
+
         //Tema
         $dv_tema = new TElement('div');
         $dv_tema->style = 'margin-right: 10px; margin-top: 10px; display: inline-block; flex: 25%';
@@ -312,9 +315,10 @@ class FormMeusPosts extends TPage
         $dv_subtipo->add($id_subtipo);
 
         //Tag
+
         $dv_tag = new TElement('div');
         $dv_tag->style = 'margin-right: 10px; margin-top: 10px; display: inline-block; width: 100%';
-        $dv_tag->add($tag_lbl);
+        $dv_tag->add("<span>$tag_lbl</span><span><sup>$btn_tag</sup></span>");
         $dv_tag->add($tag);
 
         //Serie
@@ -675,7 +679,7 @@ class FormMeusPosts extends TPage
 
             $this->form->setData($data);
 
-            new TMessage('info', 'Conteúdo gerado. Revise o texto antes de salvar.');
+            TToast::show('success',  'Conteúdo gerado com sucesso. Revise o texto antes de salvar.', 'bottom center', 'far:check-circle'); // notifica o usuário
         } catch (Exception $e) {
             $this->form->setData($this->form->getData());
             new TMessage('error', $e->getMessage());
@@ -725,7 +729,8 @@ class FormMeusPosts extends TPage
             $data->resumo = $resumo_gerado;
             $this->form->setData($data);
 
-            new TMessage('info', 'Resumo gerado com sucesso. Revise antes de salvar.');
+            TToast::show('success',  'Resumo gerado com sucesso. Revise o texto antes de salvar.', 'bottom center', 'far:check-circle'); // notifica o usuário
+
         } catch (Exception $e) {
             // mantém dados atuais do form
             $this->form->setData($this->form->getData());
@@ -818,5 +823,57 @@ class FormMeusPosts extends TPage
         }
 
         return null;
+    }
+
+    public function onAddTag($param)
+    {
+                try {
+            // opcional: aumentar limite de tempo só para esta ação
+            set_time_limit(120);
+            
+            // pega dados atuais do formulário
+            $data = $this->form->getData();
+
+            $conteudo = trim($data->conteudo ?? '');
+            $titulo = trim($data->titulo ?? '');
+            if ($conteudo === '') {
+                throw new Exception('Preencha o campo Conteúdo antes de gerar o resumo.');
+            }
+
+            if ($titulo !== '') {
+                $conteudo = "TÍTULO: {$titulo}\n\n" . $conteudo;
+            } else {
+                throw new Exception('O campo Título é necessário para gerar um resumo mais preciso. Por favor, preencha o título e tente novamente.');
+            }
+
+            // lê o arquivo de prompt para resumos
+            $caminho_md = 'app/resources/app/palavras_chaves.md';
+            if (!is_readable($caminho_md)) {
+                throw new Exception('Arquivo de prompt de resumo não encontrado: ' . $caminho_md);
+            }
+
+            $prompt_md = file_get_contents($caminho_md);
+
+            // monta o prompt a ser enviado à IA
+            $prompt = $prompt_md . "\n\n"
+                . "----- TEXTO A SER RESUMIDO -----\n"
+                . $conteudo . "\n"
+                . "----- FIM DO TEXTO -----\n";
+
+            // chama a IA usando o helper já existente
+            $palavras_chaves = $this->chamarPerplexity($prompt);
+
+            // preenche o campo tag e devolve ao formulário
+            $data->tags = $palavras_chaves;
+            $this->form->setData($data);
+
+            TToast::show('info', 'Palavras-chave geradas com sucesso. Revise antes de salvar.', 'bottom center', 'far:check-circle');
+
+
+        } catch (Exception $e) {
+            // mantém dados atuais do form
+            $this->form->setData($this->form->getData());
+            new TMessage('error', $e->getMessage());
+        }
     }
 }
