@@ -38,8 +38,6 @@ class ListaSermoes extends TStandardList
         parent::setDefaultOrder('data_postagem', 'desc');         // Define a ordem padrão
 
 
-        parent::setLimit(4);                    // Define o limite de registros por página
-
 
         //Cria o formulário
         $this->form = new BootstrapFormBuilder('form_search_Sermoes');
@@ -47,7 +45,9 @@ class ListaSermoes extends TStandardList
 
         //Cria os campos do formulário
         $id = new THidden('id');
+        $fields[] = $id;
         $titulo = new TEntry('titulo');
+        $fields[] = $titulo;
 
 
         if (!empty($param['id_tipo'])) {
@@ -65,11 +65,14 @@ class ListaSermoes extends TStandardList
         } else if ($tipo == 4) {
             $tituloform = 'Pesquisa de Devocionais';
             $titulopanel = 'Devocionais';
+            // Define o limite de registros por página
+
         }
 
         $id_tipo = new THidden('id_tipo');
         $tipo = $param['id_tipo'] ?? 1; // Define 1 como padrão se vier vazio
         $id_tipo->setValue($tipo);
+        $fields[] = $id_tipo;
 
 
 
@@ -79,17 +82,21 @@ class ListaSermoes extends TStandardList
         $data_postagem = new TDate('data_postagem');
         $data_postagem->setMask('dd/mm/yyyy');
         $data_postagem->setDatabaseMask('yyyy-mm-dd');
+        $fields[] = $data_postagem;
 
+        $tag = new TEntry('tags');
+        $fields[] = $tag;
 
         $passagem = new TEntry('passagem');
+        $fields[] = $passagem;
 
 
         //Cria os labels dos campos
-        $titulo_lbl = new TLabel('Pesquisar por título, subtítulo ou tags');
+        $titulo_lbl = new TLabel('Pesquisar por título ou subtítulo');
         $data_postagem_lbl = new TLabel('Data');
         $passagem_lbl = new TLabel('Passagem');
 
-        $this->form->setFields([$titulo, $data_postagem, $passagem, $id, $id_tipo]);
+
 
 
         //Cria div para linha única para os campos
@@ -98,9 +105,11 @@ class ListaSermoes extends TStandardList
 
         //Titulo
         $dv_titulo = new TElement('div');
-        $dv_titulo->style = 'margin-right: 10px; margin-top: 10px; display: inline-block; width: 30%;';
+        $dv_titulo->style = 'margin-right: 10px; margin-top: 10px; display: inline-block; width: 20%;';
         $dv_titulo->add($titulo_lbl);
         $dv_titulo->add($titulo);
+
+
 
         //Data
         $dv_data = new TElement('div');
@@ -108,6 +117,12 @@ class ListaSermoes extends TStandardList
         $dv_data->add($data_postagem_lbl);
         $dv_data->add($data_postagem);
 
+        //Tags - Representam as palavras-chave associadas ao sermão ou estudo e podem ser usadas para facilitar a busca e organização dos conteúdos.
+        $dv_tags = new TElement('div');
+        $dv_tags->style = 'margin-right: 10px; margin-top: 10px; display: inline-block; width: 30%';
+        $dv_tags_lbl = new TLabel('Assunto, tema ou palavra-chave');
+        $dv_tags->add($dv_tags_lbl);
+        $dv_tags->add($tag);
 
 
         //Passagem
@@ -120,6 +135,23 @@ class ListaSermoes extends TStandardList
         $dv_linha->add($dv_titulo);
         $dv_linha->add($dv_data);
         $dv_linha->add($dv_passagem);
+        $dv_linha->add($dv_tags);
+        //Séries
+        if ($tipo == 1 || $tipo == 2) {
+            $serie = new TDBCombo('id_serie', 'sample', 'Series', 'id', 'nome', 'nome');
+            $serie->setSize('100%');
+            $serie->enableSearch();
+            $serie->setChangeAction(new TAction([$this, 'onSearch'], ['id_tipo' => $tipo, 'static' => 1]));
+            $dv_serie = new TElement('div');
+            $dv_serie->style = 'margin-right: 10px; margin-top: 10px; display: inline-block; width: 30%';
+            $dv_serie_lbl = new TLabel('Série');
+            $dv_serie->add($dv_serie_lbl);
+            $dv_serie->add($serie);
+            $dv_linha->add($dv_serie);
+            $fields[] = $serie;
+        }
+
+        $this->form->setFields($fields);
 
         //Adiciona a div ao formulário  
         $this->form->addFields([$dv_linha]);
@@ -201,6 +233,9 @@ class ListaSermoes extends TStandardList
         $this->datagrid->addColumn($col_tags);
 
         //Cria as ações das colunas do data grid
+        $order_passagem = new TAction(array($this, 'onReload'), ['id_tipo' => $tipo]);
+        $order_passagem->setParameter('order', 'passagem');
+        $col_passagem->setAction($order_passagem);
         $order_titulo = new TAction(array($this, 'onReload'), ['id_tipo' => $tipo]);
         $order_titulo->setParameter('order', 'titulo');
         $col_titulo->setAction($order_titulo);
@@ -253,7 +288,9 @@ class ListaSermoes extends TStandardList
             TTransaction::open('sample');
 
             $repository = new TRepository('Postagens');
-            $limit = 4;
+            $limit = 7; // Define o limite de registros por página
+
+
 
             $criteria = new TCriteria;
             $data = TSession::getValue(__CLASS__ . '_search_data');
@@ -266,6 +303,14 @@ class ListaSermoes extends TStandardList
             }
 
             $id_tipo = TSession::getValue(__CLASS__ . '_id_tipo');
+
+            if (isset($param['id_tipo'])) {
+                TSession::setValue(__CLASS__ . '_id_tipo', $param['id_tipo']);
+                $id_tipo = $param['id_tipo'];
+            }
+
+            $limit = ($id_tipo == 4) ? 7 : 4;
+
 
             if ($id_tipo) {
                 $criteria->add(new TFilter('id_tipo', '=', $id_tipo));
@@ -341,6 +386,7 @@ class ListaSermoes extends TStandardList
             TTransaction::rollback();
         }
     }
+
 
     public function onSearch($param = null)
     {

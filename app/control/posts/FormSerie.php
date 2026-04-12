@@ -58,7 +58,7 @@ class FormSerie extends TPage
 
         $this->form->addFields([$tag_lbl], [$tag]);
 
-        
+
 
         $this->form->addHeaderActionLink(_t('Close'), new TAction([$this, 'onClose']), 'fa:times red');
         //Cria os botões do formulário
@@ -70,6 +70,15 @@ class FormSerie extends TPage
         $btn_limpa = $this->form->addAction('Limpar', new TAction([$this, 'onClear']), 'fa:plus');
         $btn_limpa->setAction(new TAction([$this, 'onClear']), 'Novo');
         $btn_limpa->class = 'btn btn-sm btn-secondary';
+
+        // Fecha o painel ao pressionar ESC
+        TScript::create("
+                        $(document).on('keydown', function(e) {
+                            if (e.key === 'Escape') {
+                                Template.closeRightPanel();
+                            }
+                        });
+                    ");
 
         //Exibe o formulário
         parent::add($this->form);

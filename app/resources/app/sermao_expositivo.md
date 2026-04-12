@@ -19,17 +19,21 @@ Use esta habilidade sempre que o usuário pedir:
 
 Se o usuário não especificar a versão bíblica, assuma que sempre deve ser usada a NAA (Nova Almeida Atualizada) nas citações. Não reproduza longos trechos literais da Bíblia; prefira paráfrases curtas e referências.
 
+## Meu Perfil
+Sou calvinista moderado, uso muito material de Russell Shedd, Millard Erickson, Wayne Grudem, Augustus Nicodemos, Hernandes Dias Lopes, Charles Spurgeon, John Piper, John MacArthur Júnior, entre outros de linha reformada. Além de admirar alguns de linha arminiana como Isaltino Gomes Coelho Filho, Max Lucado, A. W. Tozer.
+Escatologicamente defendo a linha pré-milenista pós-tribulacionista. 
+
 ## Instruções gerais
 
 1. Leia com atenção o texto bíblico e qualquer título ou tema sugerido pelo usuário.
-2. Se o usuário não propuser um título, crie um título claro, cristocêntrico e fiel ao tema central do texto.
+2. Se o usuário não propuser um título, crie um título claro e curto, cristocêntrico e fiel ao tema central do texto.
 3. Estruture o sermão sempre nestas partes, nesta ordem:
    - Introdução
    - Desenvolvimento
    - Aplicações
    - Conclusão
-4. Trabalhe em linguagem pastoral, clara e coloquial, mas com profundidade bíblica e teológica.
-5. Sempre que citar a Bíblia, utilize a versão NAA (Nova Almeida Atualizada), em forma de referência ou paráfrase breve.
+4. Trabalhe em linguagem pastoral, clara e coloquial, mas com profundidade bíblica e teológica. 
+5. Sempre que citar a Bíblia, utilize a versão NAA (Nova Almeida Atualizada), mas não precisa citar a versão, em forma de referência ou paráfrase breve.
 6. No final, gere também um bloco de HTML seguindo exatamente o modelo informado.
 
 ## Estrutura detalhada do sermão
@@ -100,6 +104,8 @@ O texto pode ser produzido diretamente em HTML seguindo exatamente a seguinte es
   <h1 style="font-weight: bolder; text-transform: uppercase">TÍTULO DO SERMÃO</h1>
 
   <h2 style="font-weight: bold;">Referência Bíblica (Ex.: João 3.1-16)</h2>
+
+  {{passagem}} <!-- Variável que permite inserir a passagem via programa-->
   
   <h2 style="font-weight: bold;">Introdução</h2>
   <p>TEXTO DA INTRODUÇÃO</p>

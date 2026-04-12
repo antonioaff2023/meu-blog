@@ -62,6 +62,15 @@ class FormTema extends TPage
         $btn_limpa->setAction(new TAction([$this, 'onClear']), 'Novo');
         $btn_limpa->class = 'btn btn-sm btn-secondary';
 
+                // Fecha o painel ao pressionar ESC
+        TScript::create("
+                        $(document).on('keydown', function(e) {
+                            if (e.key === 'Escape') {
+                                Template.closeRightPanel();
+                            }
+                        });
+                    ");
+
         //Exibe o formulário
         parent::add($this->form);
     }

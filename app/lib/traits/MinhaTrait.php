@@ -48,4 +48,6 @@ trait MinhaTrait
         $this->form->clear();
         $this->form->setData(new stdClass);
     }
+
+
 }

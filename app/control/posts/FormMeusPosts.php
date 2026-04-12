@@ -63,6 +63,10 @@ class FormMeusPosts extends TPage
         $passagem = new TEntry('passagem');
         $passagem->style = $fundo_campo;
 
+        $btn_pericope = new TButton('btn_nova_pericope');
+        $btn_pericope->setAction(new TAction(['FormPericope', 'onEdit']), '+');
+        $btn_pericope->style = 'all: unset; margin: 0 auto; color: green; font-size: 20px; font-weight: bold; cursor: pointer;';
+
         $id_tema = new TDBUniqueSearch('id_tema', 'sample', 'TemaConteudo', 'id', 'descricao');
         $id_tema->setMinLength(0);
         $id_tema->style = $fundo_campo;
@@ -171,7 +175,8 @@ class FormMeusPosts extends TPage
             $resumo,
             $btn_tema,
             $btn_serie,
-            $btn_tag
+            $btn_tag,
+            $btn_pericope
         ]);
         //Cria div's lado a lado 
         $dv_geral = new TElement('div');
@@ -216,7 +221,7 @@ class FormMeusPosts extends TPage
         //Categoria
         $dv_passagem = new TElement('div');
         $dv_passagem->style = 'margin-right: 10px; margin-top: 10px; display: inline-block; flex: 25%';
-        $dv_passagem->add($passagem_lbl);
+        $dv_passagem->add("<span>$passagem_lbl</span><span><sup>$btn_pericope</sup></span>");
         $dv_passagem->add($passagem);
 
         // Botão para abrir o Buscador Bíblico em nova aba
@@ -827,10 +832,10 @@ class FormMeusPosts extends TPage
 
     public function onAddTag($param)
     {
-                try {
+        try {
             // opcional: aumentar limite de tempo só para esta ação
             set_time_limit(120);
-            
+
             // pega dados atuais do formulário
             $data = $this->form->getData();
 
@@ -868,8 +873,6 @@ class FormMeusPosts extends TPage
             $this->form->setData($data);
 
             TToast::show('info', 'Palavras-chave geradas com sucesso. Revise antes de salvar.', 'bottom center', 'far:check-circle');
-
-
         } catch (Exception $e) {
             // mantém dados atuais do form
             $this->form->setData($this->form->getData());
