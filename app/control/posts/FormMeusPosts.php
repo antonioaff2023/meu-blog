@@ -116,17 +116,21 @@ class FormMeusPosts extends TPage
         $btn_serie->style = 'all: unset; margin: 0 auto; color: green; font-size: 20px; font-weight: bold; cursor: pointer;';
 
         $conteudo = new THtmlEditor('conteudo');
-        $conteudo->setSize('100%', 500);
+        $conteudo->setSize('100%', 400);
 
         $resumo = new THtmlEditor('resumo');
-        $resumo->setSize('100%', 500);
-
-        $resumo = new THtmlEditor('resumo');
-        $resumo->setSize('100%', 500);
+        $resumo->setSize('100%', 400);
 
         $tag = new TText('tags');
-        $tag->setSize('100%', 100);
+        $tag->setSize('100%', 70);
         $tag->style = 'background-color:rgb(192, 188, 188);';
+
+        $publica_postagem = new TCombo('publica_postagem');
+        $publica_postagem->addItems([0 => 'Rascunho', 1 => 'Publicado']);
+        $publica_postagem->style = $fundo_campo;
+        $publica_postagem->setValue(0); // Define como rascunho por padrão
+        $publica_postagem->setSize('25%');
+
 
         $btn_tag = new TButton('btn_tag');
         $btn_tag->style = 'all: unset; margin: 0 auto; color: green; font-size: 20px; font-weight: bold; cursor: pointer;';
@@ -154,6 +158,7 @@ class FormMeusPosts extends TPage
 
         $conteudo_lbl = new TLabel('Conteúdo');
         $tag_lbl = new TLabel('Tag');
+        $publica_postagem_lbl = new TLabel('Status');
         $id_lbl = new TLabel('ID');
         $id_lbl->setProperty('style', 'display: none;');
         $id->setProperty('style', 'display: none;');
@@ -176,7 +181,8 @@ class FormMeusPosts extends TPage
             $btn_tema,
             $btn_serie,
             $btn_tag,
-            $btn_pericope
+            $btn_pericope,
+            $publica_postagem
         ]);
         //Cria div's lado a lado 
         $dv_geral = new TElement('div');
@@ -194,7 +200,7 @@ class FormMeusPosts extends TPage
         $total_linhas = 7;
         for ($i = 1; $i <= $total_linhas; $i++) {
             $dv_linha[$i] = new TElement('div');
-            $dv_linha[$i]->style = 'display: flex; width: 100%;';
+            $dv_linha[$i]->style = 'display: flex; width: 100%; margin-top: 1px;';
         }
 
 
@@ -332,18 +338,29 @@ class FormMeusPosts extends TPage
         $dv_serie->add("<span>$id_serie_lbl</span><span><sup>$btn_serie</sup></span>");
         $dv_serie->add($id_serie);
 
+        // Publicar
+        $dv_publica = new TElement('div');
+        $dv_publica->style = 'margin-right: 10px; margin-top: 10px; display: inline-block; flex: 25%';
+        $publica_postagem_lbl->style = 'display: block; margin-bottom: 4px;';
+        $dv_publica->add($publica_postagem_lbl);
+        $dv_publica->add($publica_postagem);
+
+
+
 
         //Insere os campos no formulário nas linhas criadas
         $dv_linha[1]->add($dv_titulo);
         $dv_linha[2]->add($dv_subtitulo);
         $dv_linha[3]->add($dv_tema);
+         $dv_linha[3]->add($dv_serie);
         $dv_linha[4]->add($dv_postagem);
         $dv_linha[4]->add($dv_passagem);
 
         $dv_linha[5]->add($dv_tipo);
         $dv_linha[5]->add($dv_subtipo);
-        $dv_linha[6]->add($dv_serie);
-        $dv_linha[7]->add($dv_tag);
+       
+        $dv_linha[6]->add($dv_tag);
+        $dv_linha[7]->add($dv_publica);
 
 
         //Adiciona o id oculto

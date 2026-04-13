@@ -2,231 +2,649 @@
 <html lang="pt-BR">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
+    <meta name="description" content="Sermões, estudos bíblicos e teologia para edificação da Igreja.">
     <title>{title}</title>
     {LIBRARIES}
     {HEAD}
 
-    <!-- Bootstrap Core CSS -->
-    <link href="app/templates/adminbs5/blog/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Theme CSS -->
-    <link href="app/templates/adminbs5/blog/css/clean-blog.min.css" rel="stylesheet">
-    <!-- <link href="app/templates/adminbs5/custom.css" rel="stylesheet"> -->
-
-    
-
-    <!-- Inserir ícone na aba da página -->
     <link rel="icon" href="app/images/icon.png" type="image/x-icon">
-    <!-- Custom Fonts -->
+
+    <!-- Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome (já incluso no Adianti, mas garantindo) -->
     <link href="app/templates/adminbs5/blog/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet"
         type="text/css">
-    <link href='app/templates/adminbs5/blog/css/font_googleapis_lora.css' rel='stylesheet' type='text/css'>
-    <link href='app/templates/adminbs5/blog/css/font_googleapis_open_sans.css' rel='stylesheet' type='text/css'>
-    <link href="app/templates/adminbs5/custom.css" rel="stylesheet" type="text/css">
-    
-
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-    
 
     <style>
-        #menu-acima {
-            background-image: url('app/templates/adminbs5/blog/img/biblia-na-mesa-2.avif');
-            padding-top: 50px;
-            height: 30vh;
+        /* ── Reset mínimo ── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
         }
 
-        .titulo-site h1,
-        .titulo-site h2 {
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f5f3ef;
+            color: #1c1c1c;
+            margin: 0;
             padding: 0;
+            min-height: 100vh;
+        }
+
+        /* ── Navbar topo ── */
+        #topMenu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 35, 22, 0.96);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 0 24px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            transition: transform 0.3s ease;
+        }
+
+        #topMenu.nav-up {
+            transform: translateY(-100%);
+        }
+
+        /* ── Hero ── */
+        #ts-hero {
+            margin-top: 52px;
+            background: linear-gradient(155deg, #0f2316 0%, #1a3a2a 55%, #0d2318 100%);
+            padding: 28px 0 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #ts-hero::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: rgba(126, 200, 160, 0.05);
+            pointer-events: none;
+        }
+
+        #ts-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 40px;
+            left: -80px;
+            width: 320px;
+            height: 240px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.02);
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 32px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-eyebrow {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: #7ec8a0;
+            margin-bottom: 8px;
+        }
+
+        .hero-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+            font-weight: 600;
+            color: #f0ebe0;
+            line-height: 1.2;
+            margin: 0 0 8px;
+        }
+
+        .hero-subtitulo {
+            font-size: 14px;
+            color: rgba(240, 235, 224, 0.6);
+            line-height: 1.5;
+            max-width: 500px;
+            margin: 0 0 20px;
+        }
+
+        /* Devocional no hero */
+        .devocional-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 0.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 18px 22px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            max-width: 680px;
+        }
+
+        .devocional-icone {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(126, 200, 160, 0.15);
+            border: 0.5px solid rgba(126, 200, 160, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+            color: #7ec8a0;
+        }
+
+        .devocional-label {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #7ec8a0;
+            margin-bottom: 6px;
+        }
+
+        .devocional-verso {
+            font-family: 'Playfair Display', serif;
+            font-size: 14px;
+            font-style: italic;
+            color: rgba(240, 235, 224, 0.88);
+            line-height: 1.55;
             margin: 0;
         }
 
-        @media (max-width: 576px) {
-            #menu-acima {
-                padding-top: 60px !important;
-                padding-bottom: 0 !important;
-                height: 40vh;
-            }
+        .devocional-ref {
+            font-size: 11px;
+            color: rgba(240, 235, 224, 0.4);
+            margin-top: 5px;
+        }
 
-            #topMenu {
-                padding-top: 0.25rem;
-                padding-bottom: 0.25rem;
-            }
+        .devocional-titulo-link {
+            display: block;
+            font-family: 'Playfair Display', serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: #f0ebe0;
+            text-decoration: none;
+            margin-bottom: 6px;
+            transition: color 0.15s;
+        }
 
-            #topMenu .container-fluid {
-                padding-top: 0;
-                padding-bottom: 0;
-                align-items: center;
-            }
+        .devocional-titulo-link:hover {
+            color: #7ec8a0;
+            text-decoration: none;
+        }
 
-            #barramenu {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
+        /* ── Área de conteúdo ── */
+        #ts-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 36px 32px 60px;
+        }
 
-            }
+        /* ── Tabs ── */
+        .ts-tabs-wrapper {
+            border-bottom: 1px solid #dedad4;
+            margin-bottom: 28px;
+            display: flex;
+            gap: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
 
-            #barramenu .nav-link {
-                padding: 2px 6px;
-                line-height: 1.1;
-                font-size: 0.9rem;
-            }
+        .ts-tabs-wrapper::-webkit-scrollbar {
+            display: none;
+        }
 
-            #barramenu .nav-item {
-                padding: 0;
-                margin: 0 1px;
-                font-size: 0.5em;
+        .ts-tab-btn {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #888;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 10px 20px 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: color 0.15s, border-color 0.15s;
+            margin-bottom: -1px;
+        }
 
-            }
+        .ts-tab-btn:hover {
+            color: #1c1c1c;
+        }
 
-            .intro-header {
-                padding-top: 40px !important;
-                height: auto;
-            }
+        .ts-tab-btn.ativo {
+            color: #0f2316;
+            border-bottom-color: #1a3a2a;
+        }
 
-            .intro-header hr {
-                display: none;
-            }
+        .ts-tab-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #ece9e3;
+            color: #666;
+            font-size: 11px;
+            font-weight: 500;
+            min-width: 20px;
+            height: 18px;
+            padding: 0 6px;
+            border-radius: 20px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
 
-            .meu-menu {
-                font-size: 24px !important;
+        /* ── Painéis ── */
+        .ts-panel {
+            display: none;
+        }
+
+        .ts-panel.ativo {
+            display: block;
+        }
+
+        /* ── Barra de busca ── */
+        .ts-busca-wrapper {
+            margin-bottom: 20px;
+        }
+
+        .ts-busca-inner {
+            position: relative;
+            max-width: 420px;
+        }
+
+        .ts-busca-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 15px;
+            height: 15px;
+            color: #aaa;
+            pointer-events: none;
+        }
+
+        .ts-busca-input {
+            width: 100%;
+            height: 38px;
+            padding: 0 14px 0 36px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            color: #1c1c1c;
+            background: #ffffff;
+            border: 0.5px solid #dedad4;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            -webkit-appearance: none;
+        }
+
+        .ts-busca-input::placeholder {
+            color: #b0aba4;
+        }
+
+        .ts-busca-input:focus {
+            border-color: #1a3a2a;
+            box-shadow: 0 0 0 3px rgba(26, 58, 42, 0.08);
+        }
+
+        /* Remove o X nativo do tipo search em webkit */
+        .ts-busca-input::-webkit-search-cancel-button {
+            display: none;
+        }
+
+        /* ── Cards extras (além dos 4 iniciais) — ocultos por padrão ── */
+        .ts-card-extra {
+            display: none;
+        }
+
+        /* ── Resumo no card ── */
+        .ts-card-resumo {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        /* ── Grid de cards ── */
+        .ts-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 900px) {
+            .ts-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
-        @media (max-width: 576px) and (orientation: landscape) {
-            #menu-acima {
-                padding-top: 30px !important;
-                padding-bottom: 0 !important;
-                height: 50vh;
-            }
-
-        }
-
-        @media (max-height: 800px) {
-            #menu-acima {
-                padding-top: 60px !important;
-                padding-bottom: 0 !important;
-                height: clamp(30vh, 40vh, 50vh);
+        @media (max-width: 500px) {
+            .ts-grid {
+                grid-template-columns: 1fr;
             }
         }
 
-        @media (max-height: 600px) {
-            #menu-acima {
-                padding-top: 40px !important;
-                padding-bottom: 0 !important;
-                height: clamp(50vh, 60vh, 65vh);
-            }
+        /* ── Card ── */
+        .ts-card {
+            background: #ffffff;
+            border: 0.5px solid #dedad4;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+            cursor: default;
         }
 
-        @media (max-height: 400px) {
-            #menu-acima {
-                padding-top: 100px !important;
-                padding-bottom: 0 !important;
-                height: clamp(40vh, 50vh, 60vh);
+        .ts-card:hover {
+            border-color: #b8b2a8;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+            transform: translateY(-2px);
+        }
+
+        .ts-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ts-badge {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        .ts-badge-1 {
+            background: #e5f0e9;
+            color: #185c35;
+        }
+
+        /* Sermão */
+        .ts-badge-2 {
+            background: #e5eaf5;
+            color: #1a2e72;
+        }
+
+        /* Estudo */
+        .ts-badge-3 {
+            background: #f0ebe5;
+            color: #5c3010;
+        }
+
+        /* Teologia */
+        .ts-badge-4 {
+            background: #f5f0e8;
+            color: #7a5c1a;
+        }
+
+        /* Devocional */
+
+        .ts-subtipo {
+            font-size: 10px;
+            color: #999;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+
+        .ts-data {
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        .ts-card-titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1c1c1c;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .ts-card-passagem {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .ts-passagem-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #7ec8a0;
+            flex-shrink: 0;
+        }
+
+        .ts-card-titulo-link {
+            color: #1c1c1c;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .ts-card-titulo-link:hover {
+            color: #1a3a2a;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        /* ── Estado vazio ── */
+        .ts-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* ── Subtipo tags (Teologia) ── */
+        .ts-subtipo-tag {
+            display: inline-block;
+            font-size: 10px;
+            background: #f5f0eb;
+            color: #7a5c3a;
+            border-radius: 20px;
+            padding: 2px 8px;
+        }
+
+        /* ── Adianti content area ── */
+        #adianti_div_content {
+            width: 100%;
+        }
+
+        #adianti_online_content {
+            width: 100%;
+        }
+
+        #adianti_right_panel {}
+
+        /* ── Responsivo ── */
+        @media (max-width: 640px) {
+            .hero-inner {
+                padding: 0 20px 16px;
+            }
+
+            #ts-content {
+                padding: 24px 16px 48px;
+            }
+
+            .ts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ts-tab-btn {
+                padding: 8px 14px 10px;
+                font-size: 13px;
+            }
+
+            .devocional-card {
+                flex-direction: column;
+                gap: 10px;
             }
         }
     </style>
-
-
-
 </head>
-<!-- Teste -->
+
 <body>
 
-    <nav id="topMenu" class="navbar navbar-expand-lg" style="background-color: transparent;">
-        <div class="container-fluid justify-content-end">
-            {MENUTOP}
+    <!-- Navbar -->
+    <nav id="topMenu">
+        <div
+            style="display:flex; align-items:center; justify-content:space-between; width:100%; max-width:1100px; margin:0 auto;">
+            <span
+                style="font-family:'Playfair Display',serif; font-size:15px; color:#f0ebe0; font-weight:400; letter-spacing:0.3px;">
+                Teologia Simplificada
+            </span>
+            <div style="display:flex; align-items:center; gap:16px;">
+                <a href="https://prantonioaffonso.online/biblias" target="_blank"
+                    style="font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500;
+                          color:rgba(240,235,224,0.55); text-decoration:none; letter-spacing:0.3px;
+                          border:0.5px solid rgba(255,255,255,0.18); border-radius:6px;
+                          padding:5px 12px; transition:color 0.15s, border-color 0.15s;
+                          position:relative; z-index:1001; pointer-events:all; cursor:pointer;"
+                    onmouseover="this.style.color='#f0ebe0';this.style.borderColor='rgba(255,255,255,0.45)'"
+                    onmouseout="this.style.color='rgba(240,235,224,0.55)';this.style.borderColor='rgba(255,255,255,0.18)'">
+                    Bíblias
+                </a>
+                <a href="index.php?class=LoginForm" target="_self"
+                    onclick="window.location.href='index.php?class=LoginForm'; return false;" style="font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500;
+                          color:rgba(240,235,224,0.55); text-decoration:none; letter-spacing:0.3px;
+                          border:0.5px solid rgba(255,255,255,0.18); border-radius:6px;
+                          padding:5px 12px; transition:color 0.15s, border-color 0.15s;
+                          position:relative; z-index:1001; pointer-events:all; cursor:pointer;"
+                    onmouseover="this.style.color='#f0ebe0';this.style.borderColor='rgba(255,255,255,0.45)'"
+                    onmouseout="this.style.color='rgba(240,235,224,0.55)';this.style.borderColor='rgba(255,255,255,0.18)'">
+                    Administrador
+                </a>
+            </div>
         </div>
     </nav>
 
-    <!-- Page Header -->
-    <!-- Set your background image for this header on the line below. -->
-    <header id="menu-acima" class="intro-header" style="">
-
-        <div class="titulo-site">
-            <h1>Teologia Simplificada</h1>
-            <hr class="small">
-            <h2>Um blog com modelos de sermões, devocionais e estudos bíblicos</h2>
-            <hr class="small">
+    <!-- Hero -->
+    <section id="ts-hero">
+        <div class="hero-inner">
+            <p class="hero-eyebrow">Sermões · Estudos · Teologia</p>
+            <h1 class="hero-titulo">Palavra que edifica, teologia que transforma</h1>
+            <p class="hero-subtitulo">Acervo de sermões, estudos bíblicos para grupos e artigos de teologia sistemática.
+            </p>
             {DEVOCIONAL}
         </div>
-    </header>
+    </section>
 
-    <div id="adianti_div_content"></div>
+    <!-- Conteúdo Adianti (tabs + cards) -->
+    <main id="ts-content">
+        <div id="adianti_div_content"></div>
+    </main>
 
     <div id="adianti_online_content"></div>
-
     <div id="adianti_right_panel" class="right-panel"></div>
 
-    <!-- <footer class="footer">
-        <div class="container-fluid">
-            <div class="row text-muted">
-
-                <div class="col-12 text-start">
-                    <div style="text-align:right">
-                        <div id="has_main_mode_switch" class="form-check form-switch" title="_t{Dark mode}"
-                            style="margin-left: 10px;padding-top:5px;display:none">
-                            <input class="form-check-input" type="checkbox" role="switch" id="global_theme_switch"
-                                checked="" style="cursor:pointer" onclick="Template.toggleGlobalTheme(this)">
-                            <i class="fa-solid fa-circle-half-stroke"></i>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </footer> -->
-
-
-    <!-- Contact Form JavaScript -->
-
+    <!-- Scripts Adianti -->
     <script src="app/lib/include/admin.js?appver=840" type="text/javascript"></script>
-
     <script src="app/templates/{template}/js/theme.js?appver=840"></script>
     <!--[ISCREATOR]-->
     <script src="app/templates/{template}/js/creator.js?appver={buildid}"></script>
     <!--[/ISCREATOR]-->
 
-
-
-
     <script>
-        // Garante que o Adianti processe as requisições AJAX corretamente
         $.ajaxSetup({ cache: false });
-    </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var topMenu = document.getElementById('topMenu');
-            var lastScrollTop = 0;
-
+        // Navbar hide-on-scroll
+        (function () {
+            var nav = document.getElementById('topMenu');
+            var last = 0;
             window.addEventListener('scroll', function () {
-                var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                var st = window.pageYOffset || document.documentElement.scrollTop;
+                nav.classList.toggle('nav-up', st > last && st > 80);
+                last = st;
+            }, { passive: true });
+        })();
 
-                if (scrollTop < lastScrollTop) {
-                    // Rolando para baixo
-                    topMenu.classList.remove('nav-up');
-                } else {
-                    // Rolando para cima
-                    topMenu.classList.add('nav-up');
-                }
-                lastScrollTop = scrollTop;
+        // ── Restauração de estado das abas ──────────────────────────────────
+        // Este observer fica no template (fora do AJAX) e sobrevive ao
+        // recarregamento do #adianti_div_content pelo Adianti.
+        var TS_STATE_KEY = 'ts_public_state';
+
+        function tsAplicaFiltro(panelId, termo) {
+            var buscando = termo !== '';
+            var cards = document.querySelectorAll('#panel-' + panelId + ' .ts-card');
+            var visiveis = 0;
+            cards.forEach(function (card) {
+                var texto = card.getAttribute('data-busca') || '';
+                var idx = parseInt(card.getAttribute('data-idx') || '0', 10);
+                var mostra = buscando ? (texto.indexOf(termo) !== -1) : (idx < 4);
+                card.style.display = mostra ? '' : 'none';
+                if (mostra) visiveis++;
             });
-        });
+            var aviso = document.getElementById('ts-sem-resultado-' + panelId);
+            if (aviso) aviso.style.display = (buscando && visiveis === 0) ? 'block' : 'none';
+        }
+
+        function tsRestauraEstado() {
+            if (!document.getElementById('panel-sermoes')) return;
+
+            var estado = null;
+            try { estado = JSON.parse(sessionStorage.getItem(TS_STATE_KEY) || 'null'); } catch (e) { }
+
+            var abaId = (estado && estado.aba) ? estado.aba : 'sermoes';
+            var termo = (estado && estado.termo) ? estado.termo : '';
+
+            // Ativa a aba correta
+            document.querySelectorAll('.ts-tab-btn').forEach(function (b) {
+                b.classList.remove('ativo');
+                b.setAttribute('aria-selected', 'false');
+            });
+            document.querySelectorAll('.ts-panel').forEach(function (p) {
+                p.classList.remove('ativo');
+            });
+            var painel = document.getElementById('panel-' + abaId);
+            var btnAlvo = document.querySelector(".ts-tab-btn[aria-controls='panel-" + abaId + "']");
+            if (painel) painel.classList.add('ativo');
+            if (btnAlvo) { btnAlvo.classList.add('ativo'); btnAlvo.setAttribute('aria-selected', 'true'); }
+
+            // Restaura campo de busca na aba ativa
+            var input = document.querySelector('#panel-' + abaId + ' .ts-busca-input');
+            if (input) input.value = termo;
+
+            // Aplica filtro em TODAS as abas (garante max 4 em cada)
+            ['sermoes', 'estudos', 'teologia', 'devocionais'].forEach(function (id) {
+                tsAplicaFiltro(id, id === abaId ? termo : '');
+            });
+        }
+
+        // Observa o container do Adianti — sobrevive ao AJAX porque está no template
+        var tsObserverAlvo = document.getElementById('adianti_div_content');
+        if (tsObserverAlvo) {
+            new MutationObserver(function (mutations) {
+                var temNos = mutations.some(function (m) { return m.addedNodes.length > 0; });
+                if (temNos) setTimeout(tsRestauraEstado, 80);
+            }).observe(tsObserverAlvo, { childList: true, subtree: false });
+        }
     </script>
 
 </body>

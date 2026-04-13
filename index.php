@@ -3,7 +3,7 @@ require_once 'init.php';
 require_once 'app/lib/app/MeuRenderer.php';
 $sermoes = SermoesViews::render(1); // 1 = Sermões
 $estudos = SermoesViews::render(2); // 2 = Estudos Bíblicos
-$devocional = DevocionalView::render();
+$devocional = ''; // preenchido dentro do bloco público abaixo
 $ini = AdiantiApplicationConfig::get();
 $theme  = $ini['general']['theme'];
 $class  = isset($_REQUEST['class']) ? $_REQUEST['class'] : '';
@@ -62,6 +62,9 @@ else
         $content = str_replace('{MENUBOTTOM}', AdiantiMenuBuilder::parseNavBar('menu-bottom-public.xml', $theme), $content);
 
 
+        // Gera o devocional do dia aqui, onde $ini já está definido e o contexto é público
+        // InicioPublicoView é carregado pelo autoload do Adianti — não precisa de require_once
+        $devocional = InicioPublicoView::renderDevocionalHero();
         $content = str_replace('{DEVOCIONAL}', $devocional, $content);
         // $content = str_replace('{SERMOES}', $sermoes, $content);
         // $content = str_replace('{ESTUDOS}', $estudos, $content);
