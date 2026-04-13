@@ -1,0 +1,606 @@
+/* ═══════════════════════════════════════════
+   Buscador Bíblico Multi-Versão — Estilos
+   ═══════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #f5f0e8;
+  --surface:   #fdfaf5;
+  --border:    #d6ccb4;
+  --border-lt: #e8e0cc;
+  --text:      #2a2118;
+  --text-2:    #6b5f4a;
+  --text-3:    #a09070;
+  --accent:    #7c4f1e;
+  --accent-lt: #f0e4d0;
+  --accent-hv: #5c3a14;
+  --mark-bg:   #ffe08a;
+  --mark-fg:   #3d2900;
+  --warn-bg:   #fff8e1;
+  --warn-border:#f0c040;
+  --err-bg:    #ffeaea;
+  --err-border:#e07070;
+  --radius:    8px;
+  --shadow:    0 2px 8px rgba(80,50,20,.10);
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ── Header ──────────────────────────────────────────── */
+
+.site-header {
+  background: var(--accent);
+  color: #fff;
+  padding: 14px 0;
+  box-shadow: 0 2px 6px rgba(60,30,10,.25);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+}
+
+.logo-text {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+.db-badge {
+  font-size: 0.78rem;
+  background: rgba(255,255,255,.18);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+/* ── Tabs ────────────────────────────────────────────── */
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  margin: 28px 0 0;
+  border-bottom: 2px solid var(--border);
+}
+
+.tab {
+  padding: 9px 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-2);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.tab:hover { color: var(--accent); }
+
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: var(--surface);
+}
+
+/* ── Search Panels ───────────────────────────────────── */
+
+.search-panel {
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.search-panel.active { display: block; }
+
+.search-form { display: flex; flex-direction: column; gap: 16px; }
+
+.input-row {
+  display: flex;
+  gap: 10px;
+}
+
+.ref-row {
+  display: flex;
+  gap: 10px;
+}
+
+input[type="search"],
+input[type="text"],
+input[type="number"],
+select {
+  padding: 9px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: border-color .15s, box-shadow .15s;
+  outline: none;
+  width: 100%;
+}
+
+input:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(124,79,30,.12);
+}
+
+.ref-selects {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filters {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 160px;
+}
+
+.filter-group label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-2);
+}
+
+.filter-group label small {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text-3);
+}
+
+.help-text {
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+
+/* ── Version Chips ───────────────────────────────────── */
+
+.version-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-2);
+  background: #fff;
+  cursor: pointer;
+  transition: all .12s;
+  user-select: none;
+}
+
+.chip input[type="checkbox"] {
+  width: auto;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.chip:has(input:checked) {
+  background: var(--accent-lt);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.chip-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Buttons ─────────────────────────────────────────── */
+
+.btn {
+  padding: 9px 20px;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .15s, transform .08s;
+  white-space: nowrap;
+}
+
+.btn:active { transform: scale(.97); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.btn-primary:hover { background: var(--accent-hv); }
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-2);
+}
+
+.btn-sm:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Results ─────────────────────────────────────────── */
+
+#results-area { margin: 28px 0; }
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.results-actions { display: flex; gap: 8px; }
+
+#results-count {
+  font-size: 0.875rem;
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+/* Versículo card */
+.verse-card {
+  background: var(--surface);
+  border: 1px solid var(--border-lt);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 8px;
+  transition: border-color .15s, box-shadow .15s;
+  position: relative;
+}
+
+.verse-card:hover {
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+
+.verse-ref {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.verse-version {
+  font-size: 0.72rem;
+  background: var(--accent-lt);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.verse-text {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.verse-text mark {
+  background: var(--mark-bg);
+  color: var(--mark-fg);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* Modo passagem — versículos agrupados por cap. */
+.passage-chapter {
+  margin-bottom: 28px;
+}
+
+.passage-chapter h3 {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1.05rem;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.passage-verse {
+  display: flex;
+  gap: 10px;
+  padding: 3px 0;
+  line-height: 1.65;
+}
+
+.passage-verse-num {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 24px;
+  padding-top: 3px;
+}
+
+.passage-verse-text {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 0.96rem;
+}
+
+/* Comparação */
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.compare-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border-lt);
+  border-radius: var(--radius);
+  padding: 16px;
+  border-top: 3px solid var(--accent);
+}
+
+.compare-card h4 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 8px;
+}
+
+.compare-card p {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+/* ── Pagination ──────────────────────────────────────── */
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  padding: 6px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all .12s;
+}
+
+.pagination button:hover { border-color: var(--accent); color: var(--accent); }
+.pagination button.current {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* ── Loading & Notices ───────────────────────────────── */
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-2);
+  font-size: 0.9rem;
+}
+
+.notice {
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  font-size: 0.875rem;
+  margin: 20px 0;
+  line-height: 1.55;
+}
+
+.notice-warn  { background: var(--warn-bg); border: 1px solid var(--warn-border); }
+.notice-error { background: var(--err-bg);  border: 1px solid var(--err-border); }
+
+.notice a { color: var(--accent); }
+.notice code {
+  background: rgba(0,0,0,.07);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: .85em;
+  font-family: monospace;
+}
+
+.hidden { display: none !important; }
+
+/* ── Instruções ──────────────────────────────────────── */
+
+.instrucoes {
+  margin: 40px auto 60px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  font-size: 0.9rem;
+}
+
+.instrucoes h2 {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1.15rem;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.instrucoes ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.instrucoes code {
+  background: rgba(0,0,0,.06);
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-family: monospace;
+  font-size: .88em;
+}
+
+.instrucoes a { color: var(--accent); }
+
+/* ── Footer ──────────────────────────────────────────── */
+
+.site-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  padding: 16px 0;
+  text-align: center;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+
+
+/* ── Seletor de versão da Passagem ──────────────────── */
+
+.version-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: var(--accent-lt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  flex-wrap: wrap;
+}
+
+.version-nav-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  white-space: nowrap;
+}
+
+.version-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.version-pill {
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 2px solid var(--border);
+  background: #fff;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all .12s;
+  letter-spacing: .03em;
+}
+
+.version-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.version-pill.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* Passagem multi-capítulo */
+.passage-section {
+  margin-bottom: 32px;
+}
+
+.passage-section-header {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1rem;
+  color: var(--text-3);
+  font-style: italic;
+  border-bottom: 1px solid var(--border-lt);
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.passage-section-header strong {
+  color: var(--accent);
+  font-style: normal;
+}
+
+@media (max-width: 600px) {
+  .tabs { overflow-x: auto; }
+  .tab  { padding: 8px 14px; font-size: .8rem; white-space: nowrap; }
+  .input-row, .ref-row { flex-direction: column; }
+  .filters { flex-direction: column; }
+  .logo-text { font-size: 1rem; }
+}
