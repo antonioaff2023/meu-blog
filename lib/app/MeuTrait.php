@@ -368,4 +368,59 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
         file_put_contents(__DIR__ . '/log_perplexity_erro.json', $res . PHP_EOL, FILE_APPEND);
         throw new Exception('Resposta inesperada da IA. Verifique o log_perplexity_erro.json para detalhes.');
     }
+
+    private function chamarClaude(string $prompt): string
+    {
+        $apiKey = $_ENV['ANTHROPIC_API_KEY'];
+
+        $payload = [
+            'model'      => 'claude-sonnet-4-6',
+            'max_tokens' => 8192,
+            'system'     => 'Você é um assistente para elaboração de sermões e estudos bíblicos reformados, pré-milenistas, pós-tribulacionistas, com fidelidade exegética.',
+            'messages'   => [
+                [
+                    'role'    => 'user',
+                    'content' => $prompt,
+                ],
+            ],
+        ];
+
+        $ch = curl_init('https://api.anthropic.com/v1/messages');
+        curl_setopt_array($ch, [
+            CURLOPT_POST           => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => [
+                'Content-Type: application/json',
+                'x-api-key: ' . $apiKey,
+                'anthropic-version: 2023-06-01',
+            ],
+            CURLOPT_POSTFIELDS => json_encode($payload),
+        ]);
+
+        $res = curl_exec($ch);
+        if ($res === false) {
+            $err = curl_error($ch);
+            unset($ch);
+            throw new Exception('Erro na requisição à IA: ' . $err);
+        }
+
+        unset($ch);
+
+        $json = json_decode($res, true);
+
+        // Erro estruturado da API
+        if (isset($json['error'])) {
+            $msg = $json['error']['message'] ?? json_encode($json['error']);
+            throw new Exception('Erro da API da IA: ' . $msg);
+        }
+
+        // Formato Claude: content[0].text
+        if (isset($json['content'][0]['text'])) {
+            return trim($json['content'][0]['text']);
+        }
+
+        // Último recurso: log e exceção
+        file_put_contents(__DIR__ . '/log_claude_erro.json', $res . PHP_EOL, FILE_APPEND);
+        throw new Exception('Resposta inesperada da IA. Verifique o log_claude_erro.json para detalhes.');
+    }
 }

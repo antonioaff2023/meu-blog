@@ -13,8 +13,6 @@ Resuma cada ponto das aplicações e a conclusão do sermão ou estudo, em um ar
 <div class="sermon-block">
 <h2>Título sermão</h2>
 
-<h2></h2> <!-- Reservado para a data do sermão podendo deixar os caracteres dd/mm/yyyy -->
-
 <p class="meta"><strong>Texto Base:</strong><!-- Referência bíblica --></p>
 
 <p class="meta"><strong>Pontos das Aplicações:</strong></p>

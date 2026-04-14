@@ -34,7 +34,7 @@ Escatologicamente defendo a linha pré-milenista pós-tribulacionista.
    - Conclusão
 4. Trabalhe em linguagem pastoral, clara e coloquial, mas com profundidade bíblica e teológica. 
 5. Sempre que citar a Bíblia, utilize a versão NAA (Nova Almeida Atualizada), mas não precisa citar a versão, em forma de referência ou paráfrase breve.
-6. No final, gere também um bloco de HTML seguindo exatamente o modelo informado.
+6. No final, gere também um bloco de HTML seguindo exatamente o modelo informado. Não esqueça de inserir a variável {{passagem}}
 
 ## Estrutura detalhada do sermão
 
