@@ -28,3 +28,6 @@ Resuma cada ponto das aplicações e a conclusão do sermão ou estudo, em um ar
 ...
 
 </ol>
+
+## IMPORTANTE
+Retorne SOMENTE o HTML dentro do modelo acima, sem nenhum texto antes ou depois, sem blocos de código markdown (sem ```html ou ```).

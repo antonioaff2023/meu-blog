@@ -489,7 +489,6 @@ class FormMeusPosts extends TPage
                     TScript::create("document.querySelector('[name=publica_resumo]').closest('div').style.display = 'none';");
                     TScript::create("document.querySelector('[name=publica_resumo]').value = '0';");
                 }
-
             } else {
                 TCombo::clearField('form_meus_posts', 'id_subtipo');
             }
@@ -507,7 +506,6 @@ class FormMeusPosts extends TPage
 
             if (isset($param['key'])) {
                 $key = $param['key'];
-
                 $postagem = new Postagens($key);
 
                 $criteria = new TCriteria();
@@ -517,12 +515,11 @@ class FormMeusPosts extends TPage
                     TDBCombo::reloadFromModel('form_meus_posts', 'id_subtipo', 'sample', 'SubTipoConteudo', 'id', 'descricao', 'id', $criteria, TRUE);
 
                     TScript::create("setTimeout(function() {
-                        document.querySelector('[name=id_subtipo]').value = '{$postagem->id_subtipo}';
-                    }, 300);");
+                    document.querySelector('[name=id_subtipo]').value = '{$postagem->id_subtipo}';
+                }, 300);");
                 }
 
                 $postagem->data_postagem = TDate::date2br($postagem->data_postagem);
-
                 $this->form->sendData('form_meus_posts', $postagem);
 
                 self::onChangeTipo(['id_tipo' => $postagem->id_tipo]);
@@ -621,7 +618,10 @@ class FormMeusPosts extends TPage
                 $passagem = $data->passagem;
             }
 
-            $instrucao_tipo  = "Considere a tradição reformada, cristocêntrica, com ênfase em fidelidade ao texto bíblico.\n\n";
+            $instrucao_tipo  = "Sou calvinista moderado, uso muito material de Russell Shedd, 
+            Millard Erickson, Wayne Grudem, Augustus Nicodemos, Hernandes Dias Lopes, Charles Spurgeon, John Piper, John MacArthur Júnior, 
+            entre outros de linha reformada. Além de admirar alguns de linha arminiana como Isaltino Gomes Coelho Filho, Max Lucado, A. W. Tozer. 
+            Escatologicamente defendo a linha pré-milenista pós-tribulacionista. Mas as afirmações pessoais só devem ser feitas se pedidas ou necessárias para algum contexto específico.\n\n";
 
             $prompt_conteudo  = $prompt_base . "\n\n";
             $prompt_conteudo .= $instrucao_tipo;
@@ -687,7 +687,8 @@ class FormMeusPosts extends TPage
 
             $resumo_gerado = $this->chamarClaude($prompt);
 
-            $data->resumo = $resumo_gerado;
+            $somente_resumo_block = $this->extrairSermonBlock($resumo_gerado);
+            $data->resumo = $somente_resumo_block ?? $resumo_gerado;
             $this->form->setData($data);
 
             TToast::show('success', 'Resumo gerado com sucesso. Revise o texto antes de salvar.', 'bottom center', 'far:check-circle');
@@ -717,15 +718,20 @@ class FormMeusPosts extends TPage
                 $callback($object, $this->form->getData());
             }
 
-            $object->data_postagem = TDate::date2br($object->data_postagem);
-            $this->form->sendData('form_meus_posts', $object);
-
             TTransaction::close();
 
-            if (isset($this->useMessages) and $this->useMessages === false) {
+            if (isset($this->useMessages) && $this->useMessages === false) {
                 AdiantiCoreApplication::loadPageURL($this->afterSaveAction->serialize());
             } else {
                 TToast::show('success', 'Registro salvo com sucesso', 'bottom center', 'far:check-circle');
+
+                // Recarrega o formulário com o id salvo para exibir botão PDF
+                // e ocultar botão Gera IA corretamente
+                AdiantiCoreApplication::loadPage(
+                    'FormMeusPosts',
+                    'onEdit',
+                    ['key' => $object->id, 'id' => $object->id, 'id_tipo' => $object->id_tipo]
+                );
             }
 
             return $object;
@@ -768,24 +774,24 @@ class FormMeusPosts extends TPage
             $titulo   = trim($data->titulo ?? '');
 
             if ($conteudo === '') {
-                throw new Exception('Preencha o campo Conteúdo antes de gerar o resumo.');
+                throw new Exception('Preencha o campo Conteúdo antes de gerar as palavras-chave.');
             }
 
             if ($titulo !== '') {
                 $conteudo = "TÍTULO: {$titulo}\n\n" . $conteudo;
             } else {
-                throw new Exception('O campo Título é necessário para gerar um resumo mais preciso. Por favor, preencha o título e tente novamente.');
+                throw new Exception('O campo Título é necessário para gerar palavras-chave mais precisas. Por favor, preencha o título e tente novamente.');
             }
 
             $caminho_md = 'app/resources/app/palavras_chaves.md';
             if (!is_readable($caminho_md)) {
-                throw new Exception('Arquivo de prompt de resumo não encontrado: ' . $caminho_md);
+                throw new Exception('Arquivo de prompt de palavras-chave não encontrado: ' . $caminho_md);
             }
 
             $prompt_md = file_get_contents($caminho_md);
 
             $prompt = $prompt_md . "\n\n"
-                . "----- TEXTO A SER RESUMIDO -----\n"
+                . "----- TEXTO A SER ANALISADO -----\n"
                 . $conteudo . "\n"
                 . "----- FIM DO TEXTO -----\n";
 

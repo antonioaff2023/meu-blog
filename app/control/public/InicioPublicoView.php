@@ -167,7 +167,7 @@ class InicioPublicoView extends TPage
                    data_postagem, resumo, publica_resumo, tags
             FROM   tbl_postagem
             WHERE  id_tipo          = :tipo
-              AND  data_postagem    <= :hoje
+              AND  data_postagem    < :hoje
               AND  publica_postagem = b'1'
             ORDER  BY data_postagem DESC
             LIMIT  :limite
@@ -337,18 +337,6 @@ class InicioPublicoView extends TPage
             $subtipo_label = "<span class='ts-subtipo'>" . htmlspecialchars($subtipo_nome) . "</span>";
         }
 
-        // ── Resumo público ──
-        $resumo_html    = '';
-        $publica_resumo = $post['publica_resumo'] ?? null;
-        $exibe_resumo   = ($publica_resumo === "\x01" || $publica_resumo === '1' || $publica_resumo === 1);
-        if ($exibe_resumo && !empty($post['resumo'])) {
-            $resumo_txt = htmlspecialchars(strip_tags($post['resumo']));
-            if (mb_strlen($resumo_txt) > 120) {
-                $corte      = mb_strrpos(mb_substr($resumo_txt, 0, 120), ' ');
-                $resumo_txt = mb_substr($resumo_txt, 0, $corte ?: 120) . '…';
-            }
-            $resumo_html = "<p class='ts-card-resumo'>{$resumo_txt}</p>";
-        }
 
         // ── Campos básicos ──
         $titulo   = htmlspecialchars($post['titulo']   ?? '');
@@ -385,7 +373,6 @@ class InicioPublicoView extends TPage
                 <span class='ts-passagem-dot'></span>
                 {$passagem}
             </div>" : "") . "
-            {$resumo_html}
         </article>";
     }
 

@@ -87,6 +87,8 @@ Crie de 3 a 6 perguntas abertas que promovam exame do coração, fé e aplicaç�
 
 <h2><strong>Texto base:</strong> Texto bíblico</h2>
 <p class="blokquote">
+
+{{passagem}}
 <!--
 Espaço para ser inserido o texto Bíblico quando desejado na versão NAA-->
 </p>

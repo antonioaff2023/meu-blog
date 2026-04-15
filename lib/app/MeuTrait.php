@@ -308,7 +308,7 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
         $this->form->setData(new stdClass);
     }
 
-    private function chamarPerplexity(string $prompt): string
+    protected function chamarPerplexity(string $prompt): string
     {
         $apiKey = $_ENV['PERPLEXITY_API_KEY']; // ideal: pegar de config/env
 
@@ -369,7 +369,7 @@ trait MeuTrait #depends:AdiantiStandardCollectionTrait
         throw new Exception('Resposta inesperada da IA. Verifique o log_perplexity_erro.json para detalhes.');
     }
 
-    private function chamarClaude(string $prompt): string
+    protected  function chamarClaude(string $prompt): string
     {
         $apiKey = $_ENV['ANTHROPIC_API_KEY'];
 

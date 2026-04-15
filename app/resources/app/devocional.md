@@ -51,7 +51,7 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
 - A introdução deve preparar o leitor para entender o fluxo da devocional, sem entrar ainda em explicações detalhadas de cada versículo.
 - Use até 100 palavras.
 
-### Desenvolvimento (máx. 200 palavras)
+### Desenvolvimento (máx. 100 palavras)
 
 - Explique o texto de forma expositiva, versículo a versículo ou em blocos de versículos, com foco devocional.
 - Separe o desenvolvimento em blocos conforme a estrutura natural do texto (por exemplo: vv. 1–3, vv. 4–7 etc.).
@@ -60,9 +60,9 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
   - explique o sentido original (gramatical, histórico e teológico, quando possível)
   - mostre conexões com o contexto imediato e com o restante da Bíblia
 - Evite discussões técnicas muito longas; traduza conceitos teológicos em linguagem simples e aplicável à vida diária.
-- Use até 200 palavras.
+- Use até 100 palavras.
 
-### Aplicações (No máximo 70 palavras para cada aplicação)
+### Aplicações (No máximo 50 palavras para cada aplicação)
 
 - Crie entre **3 e 6** aplicações, nunca menos de 3 nem mais de 6.
 - Cada aplicação deve ter:
@@ -76,10 +76,10 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
     - a alegoria
     - ou qualquer relação cristocêntrica presente no texto
   - mostre como o leitor hoje pode responder à verdade bíblica apresentada
-- Cada aplicação deve ter no máximo 70 palavras, em frases inspirativas e pastorais.
+- Cada aplicação deve ter no máximo 50 palavras, em frases inspirativas e pastorais.
 
 
-### Conclusão (máx. 150 palavras)
+### Conclusão (máx. 100 palavras)
 
 - Faça uma conclusão que retome os principais pontos da devocional, de forma breve.
 - Inclua elementos de apelo:
@@ -92,7 +92,7 @@ Se o usuário não especificar a versão bíblica, assuma que sempre deve ser us
   - sua obra redentora
   - sua cruz e ressurreição
 - Termine com um tom pastoral, consolador e convidativo, adequado à vida devocional pessoal ou familiar.
-- Use até 150 palavras.
+- Use até 100 palavras.
 
 ## Modelo html
 
