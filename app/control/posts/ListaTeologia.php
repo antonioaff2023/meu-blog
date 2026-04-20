@@ -137,8 +137,8 @@ class ListaTeologia extends TStandardList
         $btn->setLabel('Limpar');
         $btn->style = $estilo_btn;
 
-        //Cria o botão de novo
-        $btn = $this->form->addAction('Novo', new TAction(['FormMeusPosts', 'onEdit']), 'fa:plus black');
+        // Botão Novo — passa tipo=3 para o FormMeusPosts abrir já com Teologia selecionada
+        $btn = $this->form->addAction('Novo', new TAction(['FormMeusPosts', 'onEdit'], ['tipo' => 3]), 'fa:plus black');
         $btn->class = 'btn btn-sm btn-success';
         $btn->setLabel('Novo');
         $btn->style = $estilo_btn;
@@ -182,8 +182,8 @@ class ListaTeologia extends TStandardList
         $col_subtitulo->setAction($order_subtitulo);
 
 
-        //Cria as ações do data grid
-        $action1 = new TDataGridAction(['FormMeusPosts', 'onEdit'],   ['id' => '{id}']);
+        // Ação Editar — passa tipo=3 para o FormMeusPosts carregar corretamente
+        $action1 = new TDataGridAction(['FormMeusPosts', 'onEdit'], ['id' => '{id}', 'tipo' => 3]);
         $action2 = new TDataGridAction([$this, 'onDelete'], ['id' => '{id}']);
 
         $this->datagrid->addAction($action1, 'Editar', 'fa:pen-to-square blue');
@@ -208,7 +208,6 @@ class ListaTeologia extends TStandardList
         $container->style = 'width: 100%';
         $container->add($this->form);
         $container->add($panel);
-        // $container->add($panel);
 
         parent::add($container);
     }
@@ -220,8 +219,6 @@ class ListaTeologia extends TStandardList
         $this->onReload();
     }
 
-
-    //
 
     // Cria um método onReload para recarregar o datagrid sempre com o tipo Teologia e permintindo filtro dinâmico dos campos do formulário
     public function  onReload($param = null)

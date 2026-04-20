@@ -103,7 +103,7 @@
             </menuitem>
             <menuitem label='Teologia Sistemática'>
                 <icon>fa:laptop-file</icon>
-                <action>ListaTeologia</action>
+                <action>ListaSermoes#method=onEdit#id_tipo=3</action>
             </menuitem>
         </menu>
     </menuitem>    

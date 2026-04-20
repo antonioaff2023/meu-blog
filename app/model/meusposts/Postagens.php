@@ -13,20 +13,21 @@ class Postagens extends TRecord
         public function __construct($id = NULL)
     {
         parent::__construct($id);
-        parent::addAttribute('id_tipo');
-        parent::addAttribute('id_subtipo');
-        parent::addAttribute('id_tema');
-        parent::addAttribute('id_livrobiblia');
-        parent::addAttribute('id_serie');
-        parent::addAttribute('passagem');
-        parent::addAttribute('titulo');
-        parent::addAttribute('subtitulo');
-        parent::addAttribute('data_postagem');
-        parent::addAttribute('conteudo');
-        parent::addAttribute('tags');
-        parent::addAttribute('resumo');
-        parent::addAttribute('publica_resumo');
-        parent::addAttribute('publica_postagem');
+        // parent::addAttribute('id_tipo');
+        // parent::addAttribute('id_subtipo');
+        // parent::addAttribute('id_tema');
+        // parent::addAttribute('id_livrobiblia');
+        // parent::addAttribute('id_serie');
+        // parent::addAttribute('passagem');
+        // parent::addAttribute('titulo');
+        // parent::addAttribute('subtitulo');
+        // parent::addAttribute('data_postagem');
+        // parent::addAttribute('conteudo');
+        // parent::addAttribute('tags');
+        // parent::addAttribute('resumo');
+        // parent::addAttribute('publica_resumo');
+        // parent::addAttribute('publica_postagem');
+        // parent::addAttribute('indice');
     }
 
         public function get_tipo()

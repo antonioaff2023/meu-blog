@@ -9,8 +9,7 @@
  * Regras de exibição:
  *   - Apenas postagens com publica_postagem = '1' e data_postagem <= hoje
  *   - Contador da aba = total real do banco (mesmos filtros)
- *   - Tela inicial: 4 mais recentes por aba (exceto Teologia = navegação por área)
- *   - Teologia Sistemática: exibe cards de área (subtipos); ao clicar substitui o grid no lugar, sem reload
+ *   - Tela inicial: 4 mais recentes por aba; busca: todos
  *
  * IMPORTANTE: usa uma única conexão PDO aberta no __construct para evitar
  * conflito de TTransaction entre os métodos.
@@ -36,22 +35,18 @@ class InicioPublicoView extends TPage
         // Postagens por tipo
         $sermoes     = self::queryPostagens($conn, 1, $hoje);
         $estudos     = self::queryPostagens($conn, 2, $hoje);
+        $teologia    = self::queryPostagens($conn, 3, $hoje);
         $devocionais = self::queryPostagens($conn, 4, $hoje);
-
-        // Teologia: áreas (subtipos do tipo 3), artigos de cada área e total
-        $areas_teologia   = self::queryAreasTeologia($conn);
-        $artigos_teologia = self::queryArtigosPorArea($conn, $hoje);
-        $total_teologia   = self::queryTotalPostagens($conn, 3, $hoje);
 
         TTransaction::close();
         // ──────────────────────────────────────────────────────────────────
 
         $total_sermoes     = count($sermoes);
         $total_estudos     = count($estudos);
+        $total_teologia    = count($teologia);
         $total_devocionais = count($devocionais);
 
         // ── Tabs ──────────────────────────────────────────────────────────
-        // Ordem: Sermões | Estudos Bíblicos | Devocionais | Teologia Sistemática
         $tabs_html = "
         <div> São exibidos apenas os quatro mais recentes de cada tipo. Mas você pode ver outros digitando no campo de busca.</div>
         <div class='ts-tabs-wrapper' role='tablist'>
@@ -64,20 +59,20 @@ class InicioPublicoView extends TPage
                 Estudos Bíblicos <span class='ts-tab-count'>{$total_estudos}</span>
             </button>
             <button class='ts-tab-btn' role='tab' aria-selected='false'
-                    aria-controls='panel-devocionais' onclick='tsTab(\"devocionais\",this)'>
-                Devocionais <span class='ts-tab-count'>{$total_devocionais}</span>
-            </button>
-            <button class='ts-tab-btn' role='tab' aria-selected='false'
                     aria-controls='panel-teologia' onclick='tsTab(\"teologia\",this)'>
                 Teologia Sistemática <span class='ts-tab-count'>{$total_teologia}</span>
+            </button>
+            <button class='ts-tab-btn' role='tab' aria-selected='false'
+                    aria-controls='panel-devocionais' onclick='tsTab(\"devocionais\",this)'>
+                Devocionais <span class='ts-tab-count'>{$total_devocionais}</span>
             </button>
         </div>";
 
         // ── Painéis ────────────────────────────────────────────────────────
         $painel_sermoes     = self::montarPainel('sermoes',     $sermoes,     1, $subtipos);
         $painel_estudos     = self::montarPainel('estudos',     $estudos,     2, $subtipos);
+        $painel_teologia    = self::montarPainel('teologia',    $teologia,    3, $subtipos);
         $painel_devocionais = self::montarPainel('devocionais', $devocionais, 4, $subtipos);
-        $painel_teologia    = self::montarPainelTeologia($areas_teologia, $artigos_teologia);
 
         // ── Script abas + busca ───────────────────────────────────────────
         $script = "
@@ -99,20 +94,9 @@ class InicioPublicoView extends TPage
             btn.classList.add('ativo');
             btn.setAttribute('aria-selected', 'true');
             document.getElementById('panel-' + id).classList.add('ativo');
-
-            // Teologia não tem busca convencional — não limpa nem filtra
-            if (id !== 'teologia') {
-                var input = document.querySelector('#panel-' + id + ' .ts-busca-input');
-                if (input) input.value = '';
-                tsAplicaFiltro(id, '');
-            } else {
-                // Garante que a teologia volta para o grid de áreas ao clicar na aba
-                var areasDiv = document.getElementById('ts-teologia-areas');
-                if (areasDiv) areasDiv.style.display = 'block';
-                document.querySelectorAll('.ts-area-painel').forEach(function(p) {
-                    p.style.display = 'none';
-                });
-            }
+            var input = document.querySelector('#panel-' + id + ' .ts-busca-input');
+            if (input) input.value = '';
+            tsAplicaFiltro(id, '');
             tsSalvaEstado(id, '');
         }
 
@@ -129,8 +113,8 @@ class InicioPublicoView extends TPage
         $wrapper->add($tabs_html);
         $wrapper->add($painel_sermoes);
         $wrapper->add($painel_estudos);
-        $wrapper->add($painel_devocionais);
         $wrapper->add($painel_teologia);
+        $wrapper->add($painel_devocionais);
         $wrapper->add($script);
 
         $container = new TVBox;
@@ -172,7 +156,7 @@ class InicioPublicoView extends TPage
 
     /**
      * Busca postagens públicas de um tipo.
-     * Filtro: publica_postagem = '1' AND data_postagem <= hoje.
+     * Filtro: publica_postagem = b'1' AND data_postagem <= hoje.
      * Retorna array de arrays associativos.
      */
     private static function queryPostagens(PDO $conn, int $tipo, string $hoje, int $limite = 99999): array
@@ -195,82 +179,6 @@ class InicioPublicoView extends TPage
     }
 
     /**
-     * Conta o total de postagens públicas de um tipo.
-     */
-    private static function queryTotalPostagens(PDO $conn, int $tipo, string $hoje): int
-    {
-        $stmt = $conn->prepare("
-            SELECT COUNT(*) FROM tbl_postagem
-            WHERE  id_tipo          = :tipo
-              AND  data_postagem   <= :hoje
-              AND  publica_postagem = '1'
-        ");
-        $stmt->bindValue(':tipo', $tipo, PDO::PARAM_INT);
-        $stmt->bindValue(':hoje', $hoje, PDO::PARAM_STR);
-        $stmt->execute();
-        return (int) $stmt->fetchColumn();
-    }
-
-    /**
-     * Busca as áreas da Teologia Sistemática (subtipos do tipo 3)
-     * com contagem de artigos publicados em cada área.
-     * Ordena pelo campo `ordem` da tbl_subtipo (COALESCE para nulos).
-     */
-    private static function queryAreasTeologia(PDO $conn): array
-    {
-        try {
-            $stmt = $conn->query("
-                SELECT   s.id,
-                         s.descricao,
-                         s.ordem,
-                         COUNT(p.id) AS total_artigos
-                FROM     tbl_subtipo s
-                LEFT JOIN tbl_postagem p
-                       ON p.id_subtipo       = s.id
-                      AND p.id_tipo          = 3
-                      AND p.data_postagem   <= CURDATE()
-                      AND p.publica_postagem = '1'
-                WHERE    s.id_tipo = 3
-                GROUP BY s.id, s.descricao, s.ordem
-                ORDER BY COALESCE(s.ordem, '99') ASC
-            ");
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (Exception $e) {
-            return [];
-        }
-    }
-
-    /**
-     * Busca todos os artigos de Teologia Sistemática agrupados por id_subtipo.
-     * Retorna array [ id_subtipo => [ artigo, ... ] ] ordenado por indice ASC.
-     */
-    private static function queryArtigosPorArea(PDO $conn, string $hoje): array
-    {
-        try {
-            $stmt = $conn->prepare("
-                SELECT id, id_subtipo, titulo, passagem,
-                       data_postagem, indice
-                FROM   tbl_postagem
-                WHERE  id_tipo          = 3
-                  AND  data_postagem   <= :hoje
-                  AND  publica_postagem = '1'
-                ORDER  BY id_subtipo ASC, COALESCE(indice, '99') ASC
-            ");
-            $stmt->bindValue(':hoje', $hoje, PDO::PARAM_STR);
-            $stmt->execute();
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            $agrupado = [];
-            foreach ($rows as $row) {
-                $agrupado[(int)$row['id_subtipo']][] = $row;
-            }
-            return $agrupado;
-        } catch (Exception $e) {
-            return [];
-        }
-    }
-
-    /**
      * Carrega todos os subtipos em um único SELECT.
      * Tenta os nomes de tabela mais comuns; se falhar retorna array vazio.
      * Retorna array [id => descricao].
@@ -278,7 +186,7 @@ class InicioPublicoView extends TPage
     private static function querySubtipos(PDO $conn): array
     {
         $mapa    = [];
-        $tabelas = ['tbl_subtipo', 'tbl_sub_tipo', 'sub_tipo', 'postagens_tipo'];
+        $tabelas = ['tbl_sub_tipo', 'tbl_subtipo', 'sub_tipo', 'postagens_tipo'];
         foreach ($tabelas as $tabela) {
             try {
                 $stmt = $conn->query("SELECT id, descricao FROM {$tabela}");
@@ -334,8 +242,7 @@ class InicioPublicoView extends TPage
     }
 
     /**
-     * Monta o painel HTML de cards de um tipo (sermões, estudos, devocionais).
-     * Teologia Sistemática usa montarPainelTeologia().
+     * Monta o painel HTML de cards de um tipo.
      */
     private static function montarPainel(
         string $id,
@@ -355,6 +262,7 @@ class InicioPublicoView extends TPage
         $placeholders = [
             1 => 'Buscar por título, passagem, assunto ou data...',
             2 => 'Buscar por título ou tema...',
+            3 => 'Buscar por título ou subtipo...',
             4 => 'Buscar por título ou data...',
         ];
         $placeholder = $placeholders[$tipo] ?? 'Buscar...';
@@ -386,6 +294,18 @@ class InicioPublicoView extends TPage
                 <li><strong>Data</strong> — ex.: <em>2024</em> ou <em>03/2024</em></li>
             </ul>
             <p>Por padrão são exibidos os 4 mais recentes. A busca percorre todos os estudos publicados.</p>
+        ',
+            ],
+            3 => [
+                'titulo' => 'Como buscar artigos de teologia',
+                'texto'  => '
+            <p>Os artigos de Teologia Sistemática podem ser buscados por:</p>
+            <ul>
+                <li><strong>Título</strong> — ex.: <em>trindade</em>, <em>eleição</em></li>
+                <li><strong>Subtipo / área temática</strong> — ex.: <em>soteriologia</em>, <em>escatologia</em>, <em>cristologia</em></li>
+                <li><strong>Data</strong> — ex.: <em>2023</em></li>
+            </ul>
+            <p>Por padrão são exibidos os 4 mais recentes. Digite qualquer termo para expandir a listagem.</p>
         ',
             ],
             4 => [
@@ -470,7 +390,6 @@ class InicioPublicoView extends TPage
                                 </button>
                             </div>
                         </div>";
-
         $cards = '';
         foreach ($postagens as $idx => $post) {
             $cards .= self::montarCard($post, $tipo, $subtipos, $idx);
@@ -489,250 +408,7 @@ class InicioPublicoView extends TPage
     }
 
     /**
-     * Monta o painel da Teologia Sistemática com troca client-side.
-     * Carrega tudo no HTML: grid de áreas + sub-painéis de artigos (ocultos).
-     * O JavaScript troca os layers no lugar, sem nenhum reload.
-     */
-    private static function montarPainelTeologia(array $areas, array $artigos_teologia): string
-    {
-        if (empty($areas)) {
-            return "
-            <div id='panel-teologia' class='ts-panel' role='tabpanel'>
-                <div class='ts-empty'>Nenhuma área publicada ainda.</div>
-            </div>";
-        }
-
-        $icones = [
-            'O que é teologia?'          => '📖',
-            'Doutrina da Bíblia'          => '📜',
-            'Doutrina de Deus'            => '✦',
-            'Doutrina do ser humano'      => '🧍',
-            'Doutrina do pecado'          => '⚠',
-            'Doutrina de Cristo'          => '✝',
-            'Doutrina da salvação'        => '🔑',
-            'Doutrina do Espírito Santo'  => '🕊',
-            'Doutrina da Igreja'          => '⛪',
-            'Doutrina das últimas coisas' => '⏳',
-            'Doutrina dos anjos'          => '👼',
-        ];
-
-        // ── Grid de áreas ────────────────────────────────────────────────
-        $cards_areas = '';
-        foreach ($areas as $area) {
-            $id_subtipo  = (int)$area['id'];
-            $descricao   = htmlspecialchars($area['descricao']);
-            $total       = (int)$area['total_artigos'];
-            $total_label = $total === 1 ? '1 artigo' : "{$total} artigos";
-            $icone       = $icones[$area['descricao']] ?? '📄';
-
-            $cards_areas .= "
-            <button class='ts-area-card' onclick='tsAbreArea({$id_subtipo})' type='button'>
-                <div class='ts-area-icone'>{$icone}</div>
-                <div class='ts-area-info'>
-                    <div class='ts-area-titulo'>{$descricao}</div>
-                    <div class='ts-area-total'>{$total_label}</div>
-                </div>
-                <div class='ts-area-seta'>→</div>
-            </button>";
-        }
-
-        // ── Sub-painéis de artigos (um por área, ocultos no início) ──────
-        $sub_paineis = '';
-        foreach ($areas as $area) {
-            $id_subtipo  = (int)$area['id'];
-            $descricao   = htmlspecialchars($area['descricao']);
-            $artigos     = $artigos_teologia[$id_subtipo] ?? [];
-            $total       = count($artigos);
-            $total_label = $total === 1 ? '1 artigo' : "{$total} artigos";
-
-            $cards_artigos = '';
-            if (empty($artigos)) {
-                $cards_artigos = "<div class='ts-empty'>Nenhum artigo publicado nesta área ainda.</div>";
-            } else {
-                $cards_artigos .= "<div class='ts-grid'>";
-                foreach ($artigos as $post) {
-                    $cards_artigos .= self::montarCardTeologia($post);
-                }
-                $cards_artigos .= "</div>";
-            }
-
-            $sub_paineis .= "
-            <div id='ts-area-painel-{$id_subtipo}' class='ts-area-painel' style='display:none;'>
-                <div style='display:flex; align-items:center; gap:12px; margin-bottom:20px;'>
-                    <button onclick='tsVoltaAreas()' type='button'
-                        style='display:inline-flex; align-items:center; gap:5px;
-                               font-family:\"DM Sans\",sans-serif; font-size:13px; font-weight:500;
-                               color:#1a3a2a; background:none; border:0.5px solid #1a3a2a;
-                               border-radius:8px; padding:5px 12px; cursor:pointer;
-                               transition:background 0.15s, color 0.15s; flex-shrink:0;'
-                        onmouseover='this.style.background=\"#1a3a2a\";this.style.color=\"#f0ebe0\"'
-                        onmouseout='this.style.background=\"transparent\";this.style.color=\"#1a3a2a\"'>
-                        ← Voltar
-                    </button>
-                    <div>
-                        <div style='font-family:\"Franklin Gothic Medium\",\"Arial Narrow\",Arial,sans-serif;
-                                    font-size:18px; color:#1a2a4a; font-weight:bold;'>{$descricao}</div>
-                        <div style='font-size:11px; color:#aaa; margin-top:2px;'>{$total_label}</div>
-                    </div>
-                </div>
-                {$cards_artigos}
-            </div>";
-        }
-
-        return "
-        <div id='panel-teologia' class='ts-panel' role='tabpanel'>
-
-            <!-- Camada 1: grid de áreas -->
-            <div id='ts-teologia-areas'>
-                <div style='margin-bottom:20px; font-size:13px; color:#777; line-height:1.6;'>
-                    Selecione uma área abaixo para ver os artigos publicados.
-                </div>
-                <div class='ts-area-grid'>
-                    {$cards_areas}
-                </div>
-            </div>
-
-            <!-- Camada 2: artigos de cada área (todos ocultos no início) -->
-            {$sub_paineis}
-
-        </div>
-
-        <style>
-            .ts-area-grid {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 12px;
-            }
-            @media (max-width: 600px) {
-                .ts-area-grid { grid-template-columns: 1fr; }
-            }
-            .ts-area-card {
-                display: flex;
-                align-items: center;
-                gap: 14px;
-                background: #ffffff;
-                border: 0.5px solid #dedad4;
-                border-radius: 12px;
-                padding: 18px 20px;
-                text-align: left;
-                font-family: inherit;
-                color: inherit;
-                width: 100%;
-                transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
-                cursor: pointer;
-            }
-            .ts-area-card:hover {
-                border-color: #1a3a2a;
-                box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-                transform: translateY(-2px);
-            }
-            .ts-area-icone {
-                font-size: 22px;
-                flex-shrink: 0;
-                width: 40px;
-                height: 40px;
-                background: #f0ebe5;
-                border-radius: 10px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .ts-area-info { flex: 1; min-width: 0; }
-            .ts-area-titulo {
-                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-                font-size: 1.4em;
-                font-weight: bold;
-                color: #1a2a4a;
-                margin-bottom: 3px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            .ts-area-total { font-size: 11px; color: #aaa; }
-            .ts-area-seta {
-                font-size: 16px;
-                color: #ccc;
-                flex-shrink: 0;
-                transition: color 0.15s, transform 0.15s;
-            }
-            .ts-area-card:hover .ts-area-seta {
-                color: #1a3a2a;
-                transform: translateX(3px);
-            }
-        </style>
-
-        <script>
-        function tsAbreArea(idSubtipo) {
-            // Oculta o grid de áreas
-            document.getElementById('ts-teologia-areas').style.display = 'none';
-            // Oculta eventuais outros sub-painéis abertos
-            document.querySelectorAll('.ts-area-painel').forEach(function(p) {
-                p.style.display = 'none';
-            });
-            // Exibe o sub-painel da área clicada
-            var painel = document.getElementById('ts-area-painel-' + idSubtipo);
-            if (painel) painel.style.display = 'block';
-        }
-
-        function tsVoltaAreas() {
-            // Oculta todos os sub-painéis
-            document.querySelectorAll('.ts-area-painel').forEach(function(p) {
-                p.style.display = 'none';
-            });
-            // Reexibe o grid de áreas
-            document.getElementById('ts-teologia-areas').style.display = 'block';
-        }
-        </script>";
-    }
-
-    /**
-     * Monta um card individual de artigo de Teologia Sistemática
-     * (usado no painel de área, ordenado por indice).
-     */
-    private static function montarCardTeologia(array $post): string
-    {
-        $id       = (int)$post['id'];
-        $titulo   = htmlspecialchars($post['titulo']   ?? '');
-        $passagem = htmlspecialchars($post['passagem'] ?? '');
-        $indice_raw = $post['indice'] ?? '';
-        $url        = "index.php?class=InicioPublicoView&method=onVerPost&id={$id}";
-
-        $data_fmt = '';
-        try {
-            $dt       = new DateTime($post['data_postagem']);
-            $data_fmt = $dt->format('d/m/Y');
-        } catch (Exception $e) {
-            $data_fmt = $post['data_postagem'] ?? '';
-        }
-
-        // Remove zeros à esquerda de cada segmento: "01.02" → "1.2"
-        $indice_fmt = $indice_raw !== ''
-            ? implode('.', array_map('intval', explode('.', $indice_raw)))
-            : '';
-
-        $indice_html = $indice_fmt
-            ? "<span style='font-size:11px; color:#b8972a; font-weight:600; margin-right:6px;'>{$indice_fmt}</span>"
-            : '';
-
-        return "
-        <article class='ts-card' data-idx='0'>
-            <div class='ts-card-header'>
-                <span class='ts-badge ts-badge-3'>Teologia</span>
-            </div>
-            <div class='ts-data'>{$indice_html}{$data_fmt}</div>
-            <h2 class='ts-card-titulo'>
-                <a href='{$url}' class='ts-card-titulo-link'>{$titulo}</a>
-            </h2>
-            " . ($passagem ? "
-            <div class='ts-card-passagem'>
-                <span class='ts-passagem-dot'></span>
-                {$passagem}
-            </div>" : "") . "
-        </article>";
-    }
-
-    /**
-     * Monta um card individual para sermões, estudos e devocionais.
+     * Monta um card individual.
      * Recebe array associativo (linha PDO) em vez de objeto.
      */
     private static function montarCard(array $post, int $tipo, array $subtipos, int $idx = 0): string
@@ -839,7 +515,7 @@ class InicioPublicoView extends TPage
         // Busca subtipo de forma defensiva
         $subtipo_nome = '';
         if ($post && !empty($post['id_subtipo'])) {
-            $tabelas = ['tbl_subtipo', 'tbl_sub_tipo', 'sub_tipo', 'postagens_tipo'];
+            $tabelas = ['tbl_sub_tipo', 'tbl_subtipo', 'sub_tipo', 'postagens_tipo'];
             foreach ($tabelas as $tabela) {
                 try {
                     $stSub = $conn->prepare("SELECT descricao FROM {$tabela} WHERE id = :id LIMIT 1");
